@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:background="@drawable/shape_dialog_squere">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Вид отображения"
+                android:layout_gravity="center"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/ivCross"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:padding="4dp"
+                android:src="@drawable/icon_cross_grey"/>
+            
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:flexWrap="wrap"
+                app:alignItems="stretch">
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/DefaultMaterialButton"
+                    android:id="@+id/mbtnList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="Список"
+                    app:icon="@drawable/icon_file_list"
+                    app:iconGravity="textStart"
+                    app:backgroundTint="@color/accessory_90_70"
+                    android:background="@drawable/shape_item_square"/>
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/DefaultMaterialButton"
+                    android:id="@+id/mbtnCalendar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:padding="16dp"
+                    android:text="Календарь"
+                    app:icon="@drawable/icon_calendar_desk"
+                    app:iconGravity="textStart"
+                    app:backgroundTint="@color/accessory_90_70"
+                    android:background="@drawable/shape_item_square"
+                    />
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

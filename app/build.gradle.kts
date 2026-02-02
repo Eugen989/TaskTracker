@@ -86,6 +86,9 @@ dependencies {
     // JSON
     implementation("com.google.code.gson:gson:2.10.1")
 
+    // Flexbox
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
+
     // Тестирование
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
