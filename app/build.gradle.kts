@@ -79,6 +79,8 @@ dependencies {
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+    // Bottom navigation
+    implementation("com.google.android.material:material:1.11.0")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")

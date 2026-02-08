@@ -1,14 +1,12 @@
-package com.example.tasktracker.fragments.MyTasks
+package com.example.tasktracker.fragments.AllTasks
 
 import android.os.Bundle
-import android.renderscript.ScriptGroup
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.tasktracker.R
 import com.example.tasktracker.adapters.TaskListAdapter
 import com.example.tasktracker.components.decorations.ItemDecoration
 import com.example.tasktracker.databinding.FragmentTaskListBinding
@@ -44,7 +42,7 @@ class TaskListFragment : Fragment() {
         Log.d(TAG, TAG + " init")
 
         adapter = TaskListAdapter()
-        binding.rvTasks.addItemDecoration(ItemDecoration(0, 50, 0 ,0))
+        binding.rvTasks.addItemDecoration(ItemDecoration(0, 50, 0, 0))
         binding.rvTasks.layoutManager = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.VERTICAL,
@@ -59,8 +57,8 @@ class TaskListFragment : Fragment() {
                 title = "Первый",
                 description = "User 1",
                 Importance = 1,
-                dataTimeStart = "Now",
-                dataTimeEnd = "tomorrow",
+                dataTimeStart = "19.01.2026",
+                dataTimeEnd = "20.01.2026",
                 filesList = emptyList()
             ),
             TodoTask(
@@ -68,8 +66,8 @@ class TaskListFragment : Fragment() {
                 title = "Первый 2",
                 description = "User 2",
                 Importance = 2,
-                dataTimeStart = "Now",
-                dataTimeEnd = "tomorrow",
+                dataTimeStart = "20.01.2026",
+                dataTimeEnd = "22.01.2026",
                 filesList = emptyList()
             ),
             TodoTask(
@@ -77,8 +75,8 @@ class TaskListFragment : Fragment() {
                 title = "Третий",
                 description = "User 3",
                 Importance = 3,
-                dataTimeStart = "Tomorrow",
-                dataTimeEnd = "next week",
+                dataTimeStart = "24.01.2026",
+                dataTimeEnd = "3.02.2026",
                 filesList = emptyList()
             )
             ))

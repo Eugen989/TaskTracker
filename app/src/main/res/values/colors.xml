@@ -3,7 +3,8 @@
     <color name="invisible">#00FFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    
+
+    <color name="accessory_95">#F4F4F4</color>
     <color name="accessory_90">#EBEBEB</color>
     <color name="accessory_80">#D0D0D0</color>
     <color name="accessory_70">#BFBFBF</color>

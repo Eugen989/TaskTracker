@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- =========== 12sp =========== -->
+    <!-- Regular -->
+    <style name="Text12Regular" parent="android:TextAppearance">
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineHeight">16sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <!-- Medium -->
+    <style name="Text12Medium" parent="Text12Regular">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- Bold -->
+    <style name="Text12Bold" parent="Text12Regular">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- =========== 14sp =========== -->
+    <style name="Text14Regular" parent="android:TextAppearance">
+        <item name="android:textSize">14sp</item>
+        <item name="android:lineHeight">18sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="Text14Medium" parent="Text14Regular">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Text14Bold" parent="Text14Regular">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- =========== 16sp =========== -->
+    <style name="Text16Regular" parent="android:TextAppearance">
+        <item name="android:textSize">16sp</item>
+        <item name="android:lineHeight">20sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="Text16Medium" parent="Text16Regular">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Text16Bold" parent="Text16Regular">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- =========== 20sp =========== -->
+    <style name="Text20Regular" parent="android:TextAppearance">
+        <item name="android:textSize">20sp</item>
+        <item name="android:lineHeight">24sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="Text20Medium" parent="Text20Regular">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Text20Bold" parent="Text20Regular">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- =========== 22sp =========== -->
+    <style name="Text22Regular" parent="android:TextAppearance">
+        <item name="android:textSize">22sp</item>
+        <item name="android:lineHeight">26sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="Text22Medium" parent="Text22Regular">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Text22Bold" parent="Text22Regular">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- =========== 24sp =========== -->
+    <style name="Text24Regular" parent="android:TextAppearance">
+        <item name="android:textSize">24sp</item>
+        <item name="android:lineHeight">28sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="Text24Medium" parent="Text24Regular">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Text24Bold" parent="Text24Regular">
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

@@ -25,6 +25,12 @@
         <activity
             android:name=".activities.TaskActivity"
             android:exported="true" />
+        <activity
+            android:name=".activities.MenuActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activities.SettingsUserActivity"
+            android:exported="true" />
 
     </application>
 
