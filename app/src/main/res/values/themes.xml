@@ -5,7 +5,23 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.TaskTracker" parent="Base.Theme.TaskTracker" />
+    <style name="Theme.TaskTracker" parent="Base.Theme.TaskTracker">
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLightStatusBar">true</item>
 
+<!--        <item name="materialButtonStyle">@style/DefaultMaterialButton</item>-->
+        <item name="materialButtonOutlinedStyle">@style/DefaultMaterialButton</item>
+        <item name="materialButtonStyle">@style/DefaultMaterialButton</item>
+
+        <item name="colorPrimary">@color/salad</item>
+        <item name="colorPrimaryVariant">@color/orange</item>
+        <item name="colorSecondary">@color/green</item>
+        <item name="colorSecondaryVariant">@color/red</item>
+    </style>
+
+    <style name="Apptheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+
+    </style>
 
 </resources>

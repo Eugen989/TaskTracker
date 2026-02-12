@@ -29,6 +29,8 @@ class MenuActivity : AppCompatActivity() {
     }
 
     fun initView() {
+        Log.d(TAG, "init")
+
         binding.bottomNavigationView.selectedItemId = R.id.menu_tasks
         replaceFragment(MainMenuProjectsFragment.newInstance())
 

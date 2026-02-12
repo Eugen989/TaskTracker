@@ -1,4 +1,4 @@
-package com.example.tasktracker.fragments.MainMenu
+package com.example.tasktracker.fragments.Authentication
 
 import android.os.Bundle
 import android.util.Log
@@ -6,15 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.tasktracker.databinding.FragmentMainMenuFilesBinding
+import com.example.tasktracker.databinding.FragmentLoginBinding
 
-class MainMenuFilesFragment : Fragment() {
+class AuthenticationLoginFragment : Fragment() {
     companion object {
-        fun newInstance(): MainMenuFilesFragment = MainMenuFilesFragment()
+        fun newInstance(): AuthenticationLoginFragment = AuthenticationLoginFragment()
     }
-    private val TAG = "MainMenuFilesFragment"
+    private val TAG = "AuthenticationLoginFragment"
 
-    private var _binding: FragmentMainMenuFilesBinding? = null
+    private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -22,7 +22,7 @@ class MainMenuFilesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentMainMenuFilesBinding.inflate(inflater, container, false)
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
         return binding.root
     }
 

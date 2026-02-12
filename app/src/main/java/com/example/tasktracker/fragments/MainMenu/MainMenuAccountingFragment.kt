@@ -1,6 +1,7 @@
 package com.example.tasktracker.fragments.MainMenu
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ class MainMenuAccountingFragment : Fragment() {
     companion object {
         fun newInstance(): MainMenuAccountingFragment = MainMenuAccountingFragment()
     }
+    private val TAG = "MainMenuAccountingFragment"
 
     private var _binding: FragmentMainMenuAccountingBinding? = null
     private val binding get() = _binding!!
@@ -22,5 +24,9 @@ class MainMenuAccountingFragment : Fragment() {
     ): View? {
         _binding = FragmentMainMenuAccountingBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d(TAG, "init")
     }
 }

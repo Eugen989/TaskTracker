@@ -29,7 +29,7 @@ class ChangerTaskTypeDialog : DialogFragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        Log.d(TAG, TAG + " init")
+        Log.d(TAG, "init")
         _binding = DialogChangerTaskDisplayTypeBinding.inflate(LayoutInflater.from(context))
 
         binding.mbtnList.setOnClickListener {

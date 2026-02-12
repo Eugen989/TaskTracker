@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    <declare-styleable name="DefaultMaterialButton">-->
+<!--        <attr name="buttonType" format="enum">-->
+<!--            <enum name="primary" value="0"/>-->
+<!--            <enum name="secondary" value="1"/>-->
+<!--            <enum name="outline" value="2"/>-->
+<!--            <enum name="text" value="3"/>-->
+<!--        </attr>-->
+<!--    </declare-styleable>-->
+</resources>

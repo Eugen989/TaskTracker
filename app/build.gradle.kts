@@ -18,6 +18,20 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+//    sourceSets{
+//        getByName("main") {
+//            res.srcDirs(
+//                "src/main/res/layouts/components",
+//                "src/main/res/layouts/activites",
+//                "src/main/res/layouts/fragments",
+//                "src/main/res/layouts/dialogs",
+//                "src/main/res/layouts/items",
+//                "src/main/res/layouts",
+//                "src/main/res"
+//            )
+//        }
+//    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -39,6 +53,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        dataBinding = true
     }
 }
 

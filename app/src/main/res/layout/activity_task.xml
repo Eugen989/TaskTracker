@@ -6,26 +6,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
 
     <!-- Header -->
     <LinearLayout
         android:id="@+id/layout_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:paddingHorizontal="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            >
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="12">
+                android:padding="8dp" >
                 <ImageView
                     android:id="@+id/ivTransitionToMenu"
                     android:layout_width="24dp"
@@ -37,12 +39,16 @@
                 android:id="@+id/tvLogo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="11"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginLeft="36dp"
                 android:text="TaskTrecker" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="8dp">
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
@@ -50,7 +56,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginLeft="16dp"
                     android:src="@drawable/icon_notification"/>
             </LinearLayout>
 
@@ -68,15 +74,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="8dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="2dp">
+                android:padding="8dp">
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:src="@drawable/icon_sort"/>
             </LinearLayout>
 
@@ -91,7 +97,7 @@
 <!--                android:layout_gravity="center"/>-->
 
             <com.google.android.material.button.MaterialButton
-                style="@style/DefaultMaterialButton"
+                style="@style/H16Medium"
                 android:id="@+id/mbtnDisplayType"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -100,13 +106,17 @@
                 android:gravity="center"
                 android:layout_gravity="center"
                 app:icon="@drawable/icon_file_list"
-                app:iconGravity="textStart"
-                />
+                app:iconGravity="textStart" />
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/icon_filter"/>
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -114,7 +124,7 @@
             android:id="@+id/dpCalendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_gravity="center"
             android:datePickerMode="calendar"
             android:firstDayOfWeek="2"

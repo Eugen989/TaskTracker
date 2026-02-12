@@ -5,20 +5,21 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.example.tasktracker.databinding.ActivitySettingsUserBinding
-import com.example.tasktracker.fragments.Settings.SettingsUserFragment
+import com.example.tasktracker.databinding.ActivityAuthenticationBinding
+import com.example.tasktracker.fragments.Authentication.AuthenticationLoginFragment
+import com.example.tasktracker.fragments.MainMenu.MainMenuProjectsFragment
 
-class SettingsUserActivity : AppCompatActivity() {
-    private val TAG = "SettingsUserActivity"
+class AuthenticationActivity : AppCompatActivity() {
+    private val TAG = "LoginActivity"
 
-    private var _binding: ActivitySettingsUserBinding? = null
+    private var _binding: ActivityAuthenticationBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(TAG, TAG + " init")
 
-        _binding = ActivitySettingsUserBinding.inflate(layoutInflater)
+        _binding = ActivityAuthenticationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         initView()
@@ -27,12 +28,7 @@ class SettingsUserActivity : AppCompatActivity() {
     fun initView() {
         Log.d(TAG, "init")
 
-        binding.mbTitle.setOnClickListener {
-            Log.d(TAG, "mbTitle click")
-            transitionToMenuActivity()
-        }
-
-        replaceFragment(SettingsUserFragment.newInstance())
+        replaceFragment(AuthenticationLoginFragment.newInstance())
     }
 
     fun replaceFragment(fragment: Fragment) {
@@ -46,9 +42,8 @@ class SettingsUserActivity : AppCompatActivity() {
             .commit()
     }
 
-    fun transitionToMenuActivity() {
-//        val intent = Intent(this, MenuActivity::class.java)
-        finish()
-//        startActivity(intent)
+    fun transitionToSettingsUserActivity() {
+        val intent = Intent(this, TaskActivity::class.java)
+        startActivity(intent)
     }
 }

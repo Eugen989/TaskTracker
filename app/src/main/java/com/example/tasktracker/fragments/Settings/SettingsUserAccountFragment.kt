@@ -1,4 +1,4 @@
-package com.example.tasktracker.fragments.MainMenu
+package com.example.tasktracker.fragments.Settings
 
 import android.os.Bundle
 import android.util.Log
@@ -6,15 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.tasktracker.databinding.FragmentMainMenuFilesBinding
+import com.example.tasktracker.databinding.FragmentSettingsUserAccountFragmentBinding
 
-class MainMenuFilesFragment : Fragment() {
+class SettingsUserAccountFragment : Fragment() {
     companion object {
-        fun newInstance(): MainMenuFilesFragment = MainMenuFilesFragment()
+        fun newInstance(): SettingsUserAccountFragment = SettingsUserAccountFragment()
     }
-    private val TAG = "MainMenuFilesFragment"
+    private val TAG = "SettingsUserAccountFragment"
 
-    private var _binding: FragmentMainMenuFilesBinding? = null
+    private var _binding: FragmentSettingsUserAccountFragmentBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -22,11 +22,13 @@ class MainMenuFilesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentMainMenuFilesBinding.inflate(inflater, container, false)
+        _binding = FragmentSettingsUserAccountFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, "init")
+
+
     }
 }

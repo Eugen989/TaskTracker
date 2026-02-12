@@ -50,6 +50,8 @@ class TaskActivity : AppCompatActivity() {
     }
 
     fun initView() {
+        Log.d(TAG, "init")
+
         binding.ivTransitionToMenu.setOnClickListener { transitionToMenuActivity() }
         binding.mbtnDisplayType.setOnClickListener { onDisplayTypeDialog() }
 

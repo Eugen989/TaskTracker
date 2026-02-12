@@ -80,19 +80,28 @@
             android:orientation="vertical"
             android:background="@drawable/shape_item_square">
 
-            <TextView
-                style="@style/DefaultMaterialButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:text="М"
-                android:background="@drawable/shape_item_square" />
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_weight="1"
-                android:text="Магазин" />
+                android:layout_gravity="center"
+                android:gravity="center">
+                <TextView
+                    style="@style/DefaultMaterialButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:text="М"
+                    android:background="@drawable/shape_item_square" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:text="Магазин" />
+            </LinearLayout>
+
+
 
             <TextView
                 android:layout_width="match_parent"

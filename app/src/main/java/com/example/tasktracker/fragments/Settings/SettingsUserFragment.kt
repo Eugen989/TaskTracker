@@ -1,10 +1,12 @@
 package com.example.tasktracker.fragments.Settings
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.tasktracker.activities.SettingsUserActivity
 import com.example.tasktracker.databinding.FragmentSettingsUserFragmentBinding
 
 class SettingsUserFragment : Fragment() {
@@ -24,4 +26,17 @@ class SettingsUserFragment : Fragment() {
         _binding = FragmentSettingsUserFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d(TAG, "init")
+
+        binding.mbAccountBand.setOnClickListener {
+            Log.d(TAG, "transition to SettingsUserAccountFragment")
+            (activity as SettingsUserActivity).replaceFragment(SettingsUserAccountFragment.newInstance())
+        }
+
+        binding.mbExitBand.setOnClickListener {}
+    }
+
+
 }

@@ -13,10 +13,10 @@ import com.example.tasktracker.databinding.FragmentTaskListBinding
 import com.example.tasktracker.models.TodoTask
 
 class TaskListFragment : Fragment() {
-    private val TAG = "TaskListFragment"
     companion object {
         fun newInstance() = TaskListFragment()
     }
+    private val TAG = "TaskListFragment"
 
     private var _binding: FragmentTaskListBinding? = null
     private val binding get() = _binding!!
@@ -39,7 +39,7 @@ class TaskListFragment : Fragment() {
 
 
     fun init() {
-        Log.d(TAG, TAG + " init")
+        Log.d(TAG, "init")
 
         adapter = TaskListAdapter()
         binding.rvTasks.addItemDecoration(ItemDecoration(0, 50, 0, 0))

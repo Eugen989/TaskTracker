@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.button.MaterialButton
+        style="@style/H16Bold"
         android:id="@+id/mbTitle"
-        style="@style/DefaultMaterialButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -23,66 +24,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/settingUserHeader"
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:padding="8dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/mbTitle">
+        app:layout_constraintTop_toBottomOf="@+id/mbTitle" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Мой аккаунт" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical">
-            <com.google.android.material.button.MaterialButton
-                style="@style/DefaultMaterialButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Аккаунт"
-                android:textAlignment="textStart"
-                app:icon="@drawable/icon_arrow_half_right"
-                app:iconGravity="end"/>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/accessory_70"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="vertical">
-            <com.google.android.material.button.MaterialButton
-                style="@style/DefaultMaterialButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Уведомления"
-                android:textAlignment="textStart"
-                app:icon="@drawable/icon_arrow_half_right"
-                app:iconGravity="end"/>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/accessory_70"/>
-        </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/DefaultMaterialButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Выйти"
-            android:textAlignment="textStart"
-            app:icon="@drawable/icon_exit"/>
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
