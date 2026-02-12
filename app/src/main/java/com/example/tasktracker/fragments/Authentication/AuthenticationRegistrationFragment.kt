@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.tasktracker.activities.AuthenticationActivity
 import com.example.tasktracker.databinding.FragmentRegistrationBinding
 
 class AuthenticationRegistrationFragment : Fragment() {
@@ -28,5 +29,15 @@ class AuthenticationRegistrationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, "init")
+
+        binding.mbRegistration.setOnClickListener {
+            activity?.finish()
+        }
+
+        binding.mbToAuthorization.setOnClickListener {
+            (activity as AuthenticationActivity).replaceFragment(
+                AuthenticationLoginFragment.newInstance()
+            )
+        }
     }
 }

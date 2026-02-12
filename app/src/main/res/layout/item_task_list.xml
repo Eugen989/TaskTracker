@@ -5,49 +5,61 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp">
+        android:layout_height="wrap_content" >
 
-        <CheckBox
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center"/>
+
         <LinearLayout
+            android:id="@+id/layoutTodoContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="8dp">
+            android:padding="8dp"
+            android:layout_marginBottom="8dp">
 
-            <TextView
-                android:id="@+id/tvItemTitle"
+            <CheckBox
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"/>
+            <LinearLayout
+                android:id="@+id/layoutTodoInformationContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Title"/>
+                android:orientation="vertical"
+                android:layout_marginLeft="8dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
                 <TextView
-                    android:id="@+id/tvData"
+                    android:id="@+id/tvItemTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:text="Data"/>
-                <TextView
-                    android:id="@+id/tvItemUser"
+                    android:text="Title"/>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="User"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="5"
-                    android:text="Project"
-                    android:textAlignment="textEnd"/>
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tvData"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:text="Data"/>
+                    <TextView
+                        android:id="@+id/tvItemUser"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="User"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="5"
+                        android:text="Project"
+                        android:textAlignment="textEnd"/>
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
+
+
 
     </LinearLayout>
 

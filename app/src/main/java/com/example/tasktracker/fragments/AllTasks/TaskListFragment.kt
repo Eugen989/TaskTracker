@@ -41,7 +41,7 @@ class TaskListFragment : Fragment() {
     fun init() {
         Log.d(TAG, "init")
 
-        adapter = TaskListAdapter()
+        adapter = TaskListAdapter({ updateElementFragment() })
         binding.rvTasks.addItemDecoration(ItemDecoration(0, 50, 0, 0))
         binding.rvTasks.layoutManager = LinearLayoutManager(
             requireContext(),
@@ -50,8 +50,8 @@ class TaskListFragment : Fragment() {
         )
         binding.rvTasks.adapter = adapter
 
-        var ltt = mutableListOf<TodoTask>()
-        ltt.addAll(listOf(
+        var ListTodoTasks = mutableListOf<TodoTask>()
+        ListTodoTasks.addAll(listOf(
             TodoTask(
                 id = 1,
                 title = "Первый",
@@ -78,11 +78,24 @@ class TaskListFragment : Fragment() {
                 dataTimeStart = "24.01.2026",
                 dataTimeEnd = "3.02.2026",
                 filesList = emptyList()
+            ),
+            TodoTask(
+                id = 34,
+                title = "Четвертый",
+                description = "User 4",
+                Importance = 0,
+                dataTimeStart = "24.01.2026",
+                dataTimeEnd = "3.02.2026",
+                filesList = emptyList()
             )
             ))
 
-        Log.d(TAG, "ltt - " + ltt)
-        adapter.submitList(ltt)
+        Log.d(TAG, "ListTodoTasks - " + ListTodoTasks)
+        adapter.submitList(ListTodoTasks)
+    }
+
+    fun updateElementFragment() {
+
     }
 
     override fun onDestroy() {

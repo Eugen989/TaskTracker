@@ -38,11 +38,47 @@
                 app:backgroundTint="@color/invisible"
                 app:icon="@drawable/icon_arrow_half_right"
                 app:iconGravity="end" />
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@color/accessory_70" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/mbNotificationBand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/shape_item_square"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="Уведомления"
+                android:textAlignment="textStart"
+                app:backgroundTint="@color/invisible"
+                app:icon="@drawable/icon_arrow_half_right"
+                app:iconGravity="end" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/accessory_70" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/mbAdditionalFeaturesBand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/shape_item_square"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="Дополнительные возможности"
+                android:textAlignment="textStart"
+                app:backgroundTint="@color/invisible"
+                app:icon="@drawable/icon_arrow_half_right"
+                app:iconGravity="end" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/accessory_70" />
+
         </LinearLayout>
 
         <LinearLayout

@@ -22,7 +22,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:hint="Введите логин"/>
 
         <EditText
@@ -32,6 +32,8 @@
             android:hint="Введите пароль"/>
 
         <com.google.android.material.button.MaterialButton
+            style="@style/H16Regular"
+            android:id="@+id/mbAuthorization"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -39,6 +41,8 @@
             android:background="@drawable/shape_button_active_square"/>
 
         <com.google.android.material.button.MaterialButton
+            style="@style/H14Regular"
+            android:id="@+id/mbToRegistration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
