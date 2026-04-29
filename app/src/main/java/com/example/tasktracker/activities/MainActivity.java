@@ -13,7 +13,6 @@ public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
 
-//    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

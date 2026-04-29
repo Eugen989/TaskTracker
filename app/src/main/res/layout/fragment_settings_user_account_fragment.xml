@@ -48,11 +48,13 @@
                 android:text="Имя"/>
 
             <EditText
+                style="@style/H16Regular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:padding="8dp"
                 android:hint="Введите имя"
+
                 android:background="@drawable/shape_item_square" />
 
 
@@ -63,6 +65,7 @@
                 android:text="Фамилия"/>
 
             <EditText
+                style="@style/H16Regular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -77,6 +80,7 @@
                 android:text="Электронная почта"/>
 
             <EditText
+                style="@style/H16Regular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
