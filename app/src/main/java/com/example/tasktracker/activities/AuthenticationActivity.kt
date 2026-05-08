@@ -17,7 +17,7 @@ class AuthenticationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, TAG + " init")
+//        Log.d(TAG, TAG + " init")
 
         _binding = ActivityAuthenticationBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -26,13 +26,13 @@ class AuthenticationActivity : AppCompatActivity() {
     }
 
     fun initView() {
-        Log.d(TAG, "init")
+//        Log.d(TAG, "init")
 
         replaceFragment(AuthenticationLoginFragment.newInstance())
     }
 
     fun replaceFragment(fragment: Fragment) {
-        Log.d(TAG, "replaceFragment tag - " + fragment.tag + " " + fragment)
+//        Log.d(TAG, "replaceFragment tag - " + fragment.tag + " " + fragment)
         supportFragmentManager.beginTransaction()
             .replace(
                 binding.fragmentContainer.id,

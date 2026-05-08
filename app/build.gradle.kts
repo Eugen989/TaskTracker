@@ -2,6 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    alias(libs.plugins.google.gms.google.services)
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -71,12 +73,6 @@ dependencies {
     // Фрагменты
     implementation("androidx.fragment:fragment-ktx:1.7.0")
 
-    // Room - ВРЕМЕННО УДАЛИТЕ или ЗАКОММЕНТИРУЙТЕ
-    // implementation("androidx.room:room-runtime:2.6.1")
-    // implementation("androidx.room:room-ktx:2.6.1")
-    // implementation("androidx.room:room-paging:2.6.1")
-    // kapt("androidx.room:room-compiler:2.6.1")
-
     // Lifecycle & ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
@@ -89,7 +85,6 @@ dependencies {
 
     // Выберите ОДНУ библиотеку для загрузки изображений
     implementation("io.coil-kt:coil:2.4.0")
-    // ИЛИ implementation("com.github.bumptech.glide:glide:4.14.2")
 
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
@@ -106,10 +101,7 @@ dependencies {
     // Flexbox
     implementation("com.google.android.flexbox:flexbox:3.0.0")
 
-    // Для работы с GIF (Decoding)
-    implementation("com.github.bumptech.glide:glide:4.15.1")
-    // Для работы с сетью (Kdan Cloud API)
-//    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     // Для работы с корутинами
@@ -117,6 +109,21 @@ dependencies {
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation(libs.firebase.auth)
+    implementation(libs.credentials)
+    implementation(libs.credentials.play.services.auth)
+    implementation(libs.googleid)
+
+    // firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
+
+    // Для работы с GIF (Decoding)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
     // Тестирование
     testImplementation("junit:junit:4.13.2")

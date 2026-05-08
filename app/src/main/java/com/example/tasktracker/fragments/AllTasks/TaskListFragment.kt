@@ -5,26 +5,38 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.tasktracker.adapters.TaskListAdapter
+import com.example.tasktracker.components.TaskViewModel
 import com.example.tasktracker.components.decorations.ItemDecoration
 import com.example.tasktracker.databinding.FragmentTaskListBinding
-import com.example.tasktracker.models.TodoTask
+import com.example.tasktracker.models.TodoTaskModel
+import kotlinx.coroutines.launch
 
 class TaskListFragment : Fragment() {
     companion object {
         fun newInstance() = TaskListFragment()
     }
-    private val TAG = "TaskListFragment"
 
+    private val TAG = "TaskListFragment"
     private var _binding: FragmentTaskListBinding? = null
     private val binding get() = _binding!!
-
+    private lateinit var taskViewModel: TaskViewModel
     private lateinit var adapter: TaskListAdapter
+
+    private var currentPlanId: String? = null
+    private var currentUserId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "=== onCreate ===")
+        arguments?.let {
+            currentPlanId = it.getString("PLAN_ID")
+            currentUserId = it.getString("USER_ID")
+        }
     }
 
     override fun onCreateView(
@@ -32,16 +44,24 @@ class TaskListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentTaskListBinding.inflate(inflater, container, false)
-        init()
         return binding.root
     }
 
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        init()
+    }
 
     fun init() {
-        Log.d(TAG, "init")
+        taskViewModel = TaskViewModel()
 
-        adapter = TaskListAdapter({ updateElementFragment() })
+        adapter = TaskListAdapter(
+            onClick = { task ->
+                updateElementFragment(task)
+            },
+            items = emptyList()
+        )
+
         binding.rvTasks.addItemDecoration(ItemDecoration(0, 50, 0, 0))
         binding.rvTasks.layoutManager = LinearLayoutManager(
             requireContext(),
@@ -50,57 +70,56 @@ class TaskListFragment : Fragment() {
         )
         binding.rvTasks.adapter = adapter
 
-        var ListTodoTasks = mutableListOf<TodoTask>()
-        ListTodoTasks.addAll(listOf(
-            TodoTask(
-                id = 1,
-                title = "Первый",
-                description = "User 1",
-                Importance = 1,
-                dataTimeStart = "19.01.2026",
-                dataTimeEnd = "20.01.2026",
-                filesList = emptyList()
-            ),
-            TodoTask(
-                id = 2,
-                title = "Первый 2",
-                description = "User 2",
-                Importance = 2,
-                dataTimeStart = "20.01.2026",
-                dataTimeEnd = "22.01.2026",
-                filesList = emptyList()
-            ),
-            TodoTask(
-                id = 3,
-                title = "Третий",
-                description = "User 3",
-                Importance = 3,
-                dataTimeStart = "24.01.2026",
-                dataTimeEnd = "3.02.2026",
-                filesList = emptyList()
-            ),
-            TodoTask(
-                id = 34,
-                title = "Четвертый",
-                description = "User 4",
-                Importance = 0,
-                dataTimeStart = "24.01.2026",
-                dataTimeEnd = "3.02.2026",
-                filesList = emptyList()
-            )
-            ))
+        // Наблюдаем за задачами
+        lifecycleScope.launch {
+            taskViewModel.tasks.collect { tasks ->
+                adapter.submitList(tasks)
+            }
+        }
 
-        Log.d(TAG, "ListTodoTasks - " + ListTodoTasks)
-        adapter.submitList(ListTodoTasks)
+        // Наблюдаем за ошибками
+        lifecycleScope.launch {
+            taskViewModel.error.collect { error ->
+                error?.let {
+                    Log.e(TAG, "Error: $it")
+                    Toast.makeText(requireContext(), "Ошибка: $it", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        // Загружаем задачи
+        loadTasks()
     }
 
-    fun updateElementFragment() {
+    private fun loadTasks() {
+        when {
+            currentPlanId != null -> {
+                taskViewModel.loadTasksByPlan(currentPlanId!!)
+            }
+            currentUserId != null -> {
+                taskViewModel.loadTasks(currentUserId!!)
+            }
+            else -> {
+                Log.w(TAG, "No PLAN_ID or USER_ID provided")
+            }
+        }
+    }
 
+    fun updateElementFragment(task: TodoTaskModel) {
+        Log.d(TAG, "Clicked on task: ${task.title}")
+        // TODO: Открыть детали задачи
+    }
+
+    fun refreshTasks() {
+        loadTasks()
+    }
+
+    fun onTaskCreated() {
+        loadTasks()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
     }
-
 }

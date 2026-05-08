@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.tasktracker" />
+                  <option name="mobileSdkAppId" value="1:807599300723:android:2e1713c5cc12d228758a06" />
+                  <option name="projectId" value="animator-task-tracker" />
+                  <option name="projectNumber" value="807599300723" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

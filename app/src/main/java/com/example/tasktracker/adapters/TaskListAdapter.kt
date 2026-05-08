@@ -9,11 +9,13 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tasktracker.R
 import com.example.tasktracker.databinding.ItemTaskListBinding
-import com.example.tasktracker.models.TodoTask
+import com.example.tasktracker.models.TodoTaskModel
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-class TaskListAdapter (
-    private var onClick: () -> Unit,
-    private var items: List<TodoTask> = emptyList()
+class TaskListAdapter(
+    private var onClick: (TodoTaskModel) -> Unit,
+    private var items: List<TodoTaskModel> = emptyList()
 ) : RecyclerView.Adapter<TaskListAdapter.TaskListHolder>() {
     private val TAG = "TaskListAdapter"
 
@@ -40,35 +42,34 @@ class TaskListAdapter (
     override fun getItemCount(): Int = items.size
 
     @SuppressLint("NotifyDataSetChanged")
-    public fun submitList(newItems: List<TodoTask>) {
+    fun submitList(newItems: List<TodoTaskModel>) {
         items = newItems
         notifyDataSetChanged()
     }
 
-    class TaskListHolder(private val binding: ItemTaskListBinding, private var onClickItem: () -> Unit) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: TodoTask) {
+    class TaskListHolder(
+        private val binding: ItemTaskListBinding,
+        private var onClickItem: (TodoTaskModel) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        private val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
+
+        fun bind(item: TodoTaskModel) {
             binding.tvItemTitle.text = item.title
-            binding.tvData.text = item.dataTimeStart
+            binding.tvData.text = item.dataTimeStart?.let { dateFormat.format(it) } ?: "Дата не указана"
             binding.tvItemUser.text = item.description
 
-            binding.layoutTodoInformationContainer.setOnClickListener { onClickItem() }
+            binding.layoutTodoInformationContainer.setOnClickListener {
+                onClickItem(item)
+            }
 
             val shape = GradientDrawable()
             shape.shape = GradientDrawable.RECTANGLE
-            shape.cornerRadius = 16f // радиус скругления в пикселях
-            shape.setColor(importanceColorMap(item.Importance)) // устанавливаем цвет
+            shape.cornerRadius = 16f
+            shape.setColor(ContextCompat.getColor(binding.root.context, R.color.orange))
             shape.alpha = 200
 
             binding.layoutTodoContainer.background = shape
-        }
-
-        fun importanceColorMap(importance: Int): Int {
-            return when (importance) {
-                1 -> ContextCompat.getColor(binding.root.context, R.color.red_light)
-                2 -> ContextCompat.getColor(binding.root.context, R.color.orange)
-                3 -> ContextCompat.getColor(binding.root.context, R.color.salad)
-                else -> ContextCompat.getColor(binding.root.context, R.color.invisible)
-            }
         }
     }
 }

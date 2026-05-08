@@ -1,28 +1,20 @@
 package com.example.tasktracker.activities
 
-import android.app.Dialog
-import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.icu.text.DateFormat
 import android.icu.text.SimpleDateFormat
-import android.icu.util.Calendar
-import android.icu.util.LocaleData
 import android.os.Bundle
-import android.util.AttributeSet
 import android.util.Log
-import android.view.View
-import android.widget.DatePicker
-import com.example.tasktracker.R
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.example.tasktracker.R
+import com.example.tasktracker.components.TaskViewModel
 import com.example.tasktracker.components.dialogs.ChangerTaskTypeDialog
+import com.example.tasktracker.components.dialogs.CreateTaskDialog
 import com.example.tasktracker.databinding.ActivityTaskBinding
 import com.example.tasktracker.fragments.AllTasks.TaskListFragment
-import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.Locale
 
@@ -39,23 +31,72 @@ class TaskActivity : AppCompatActivity() {
     private var dateMonth: Int = 0
     private var dateYear: Int = 0
 
+    // Данные из Intent
+    private var currentPlanId: String? = null
+    private var currentPlanName: String? = null
+    private var currentUserId: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, TAG + " init");
 
         _binding = ActivityTaskBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        currentPlanId = intent.getStringExtra("PLAN_ID")
+        currentPlanName = intent.getStringExtra("PLAN_NAME")
+        currentUserId = intent.getStringExtra("USER_ID")
+
+        if (currentPlanId != null) {
+            supportActionBar?.title = currentPlanName
+        }
+
         initView()
+        changeDisplay()
     }
 
     fun initView() {
-        Log.d(TAG, "init")
-
         binding.ivTransitionToMenu.setOnClickListener { transitionToMenuActivity() }
         binding.mbtnDisplayType.setOnClickListener { onDisplayTypeDialog() }
 
-        changeDisplay()
+        binding.etNewTask.setOnClickListener {
+            showCreateTaskDialog()
+        }
+        binding.etNewTask.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                showCreateTaskDialog()
+            }
+        }
+    }
+
+    private fun showCreateTaskDialog() {
+        if (currentPlanId == null) {
+            Toast.makeText(this, "План не выбран", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val dialog = CreateTaskDialog.newInstance(currentPlanId!!, currentUserId ?: "")
+        dialog.setOnTaskCreatedListener { newTask ->
+            Log.d(TAG, "Task created: ${newTask.title}, ID: ${newTask.id}")
+
+            val fragment = supportFragmentManager.findFragmentByTag("TaskListFragment")
+
+            if (fragment is TaskListFragment) {
+                fragment.refreshTasks()
+            } else {
+                val bundle = Bundle().apply {
+                    putString("PLAN_ID", currentPlanId)
+                    putString("USER_ID", currentUserId)
+                }
+                val newFragment = TaskListFragment.newInstance()
+                newFragment.arguments = bundle
+                supportFragmentManager.beginTransaction()
+                    .replace(binding.fragmentContainer.id, newFragment, "TaskListFragment")
+                    .commit()
+            }
+
+            binding.etNewTask.text?.clear()
+        }
+        dialog.show(supportFragmentManager, "CreateTaskDialog")
     }
 
     fun changeDisplay() {
@@ -67,23 +108,24 @@ class TaskActivity : AppCompatActivity() {
     }
 
     fun showTaskListPart() {
-        Log.d(TAG, "showTaskListPart")
-
         binding.dpCalendar.isVisible = false
 
         binding.mbtnDisplayType.text = "Title"
         binding.mbtnDisplayType.setIconResource(R.drawable.icon_file_list)
+
+        val fragment = TaskListFragment.newInstance()
+        val bundle = Bundle().apply {
+            putString("PLAN_ID", currentPlanId)
+            putString("USER_ID", currentUserId)
+        }
+        fragment.arguments = bundle
+
         supportFragmentManager.beginTransaction()
-            .replace(
-                binding.fragmentContainer.id,
-                TaskListFragment.newInstance(),
-                "TaskListFragment"
-            )
+            .replace(binding.fragmentContainer.id, fragment, "TaskListFragment")
             .commit()
     }
 
     fun showTaskDataPart() {
-        Log.d(TAG, "showTaskDataPart")
         binding.mbtnDisplayType.text = "Data"
         binding.mbtnDisplayType.setIconResource(R.drawable.icon_calendar_desk)
 
@@ -101,37 +143,26 @@ class TaskActivity : AppCompatActivity() {
             dateDay = dayOfMonth
             dateMonth = monthOfYear
             dateYear = year
-            Log.d(TAG, "Date changed to: $dateDay ${dateMonth + 1} $dateYear")
         }
+
+        val fragment = TaskListFragment.newInstance()
+        val bundle = Bundle().apply {
+            putString("PLAN_ID", currentPlanId)
+            putString("USER_ID", currentUserId)
+        }
+        fragment.arguments = bundle
+
         supportFragmentManager.beginTransaction()
-            .replace(binding.fragmentContainer.id, TaskListFragment.newInstance(), null)
+            .replace(binding.fragmentContainer.id, fragment, "TaskListFragment")
             .commit()
     }
 
     fun onDisplayTypeDialog() {
-//        val dialogBindoing = layoutInflater.inflate(R.layout.dialog_changer_task_display_type, null)
-//        val dialog = Dialog(this)
-//        dialog.setContentView(dialogBindoing)
-//        dialog.setCancelable(true)
-//
-//        dialog.findViewById<MaterialButton>(R.id.mbtnList).setOnClickListener {
-//            selectedDisplayType = 0
-//        }
-//
-//        dialog.findViewById<MaterialButton>(R.id.mbtnCalendar).setOnClickListener {
-//            selectedDisplayType = 1
-//        }
-//
-//        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-//        dialog.show()
-
         val dialog = ChangerTaskTypeDialog()
         dialog.setOnTypeSelectedListener { type ->
             selectedDisplayType = type
-            Log.d(TAG, "Dialog type - " + selectedDisplayType)
             changeDisplay()
         }
-
         dialog.show(supportFragmentManager, "ChangerTaskTypeDialog")
     }
 
@@ -140,15 +171,12 @@ class TaskActivity : AppCompatActivity() {
         dateDay = SimpleDateFormat("dd", Locale.getDefault()).format(currentDate).toInt()
         dateMonth = SimpleDateFormat("MM", Locale.getDefault()).format(currentDate).toInt() - 1
         dateYear = SimpleDateFormat("yyyy", Locale.getDefault()).format(currentDate).toInt()
-        Log.d(TAG, "showTaskDataPart - " +
-                "${dateDay} " +
-                "${dateMonth} " +
-                "${dateYear}")
+        Log.d(TAG, "showTaskDataPart - ${dateDay} ${dateMonth} ${dateYear}")
     }
 
     fun transitionToMenuActivity() {
         val intent = Intent(this, MenuActivity::class.java)
         startActivity(intent)
+        finish()
     }
-
 }

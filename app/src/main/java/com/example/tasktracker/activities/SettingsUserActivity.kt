@@ -16,7 +16,7 @@ class SettingsUserActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, TAG + " init")
+//        Log.d(TAG, TAG + " init")
 
         _binding = ActivitySettingsUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -25,10 +25,10 @@ class SettingsUserActivity : AppCompatActivity() {
     }
 
     fun initView() {
-        Log.d(TAG, "init")
+//        Log.d(TAG, "init")
 
         binding.mbTitle.setOnClickListener {
-            Log.d(TAG, "mbTitle click")
+//            Log.d(TAG, "mbTitle click")
             transitionToMenuActivity()
         }
 
@@ -36,7 +36,7 @@ class SettingsUserActivity : AppCompatActivity() {
     }
 
     fun replaceFragment(fragment: Fragment) {
-        Log.d(TAG, "replaceFragment tag - " + fragment.tag + " " + fragment)
+//        Log.d(TAG, "replaceFragment tag - " + fragment.tag + " " + fragment)
         supportFragmentManager.beginTransaction()
             .replace(
                 binding.fragmentContainer.id,

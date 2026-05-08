@@ -121,6 +121,7 @@
         </LinearLayout>
 
         <DatePicker
+            android:visibility="gone"
             android:id="@+id/dpCalendar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -131,11 +132,14 @@
             android:startYear="2026" />
 
         <EditText
+            android:id="@+id/etNewTask"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="Новая задача"
             android:textSize="14dp"/>
+
+
 
     </LinearLayout>
 

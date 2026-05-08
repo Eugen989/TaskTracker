@@ -20,7 +20,7 @@ class MenuActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, TAG + " init")
+//        Log.d(TAG, TAG + " init")
 
         _binding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -29,7 +29,7 @@ class MenuActivity : AppCompatActivity() {
     }
 
     fun initView() {
-        Log.d(TAG, "init")
+//        Log.d(TAG, "init")
 
         binding.bottomNavigationView.selectedItemId = R.id.menu_tasks
         replaceFragment(MainMenuProjectsFragment.newInstance())
@@ -48,7 +48,7 @@ class MenuActivity : AppCompatActivity() {
     }
 
     fun replaceFragment(fragment: Fragment) {
-        Log.d(TAG, "replaceFragment tag - " + fragment.tag + " " + fragment)
+//        Log.d(TAG, "replaceFragment tag - " + fragment.tag + " " + fragment)
         supportFragmentManager.beginTransaction()
             .replace(
                 binding.fragmentContainer.id,

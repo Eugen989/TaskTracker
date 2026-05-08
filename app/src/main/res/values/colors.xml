@@ -18,12 +18,14 @@
     <color name="accessory_90_70">#70EBEBEB</color>
     <color name="accessory_90_50">#50EBEBEB</color>
 
+    <color name="primary_color">#2196F3</color>
     <color name="red_light">#DC2323</color>
     <color name="red">#C31F1F</color>
     <color name="orange">#DB704C</color>
     <color name="green">#127516</color>
     <color name="salad">#1FC374</color>
     <color name="blue">#1FC3C0</color>
+    <color name="gray">#808080</color>
 
 <!--    <color name="default_background">#</color>-->
 </resources>

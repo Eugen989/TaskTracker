@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "807599300723",
+    "project_id": "animator-task-tracker",
+    "storage_bucket": "animator-task-tracker.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807599300723:android:2e1713c5cc12d228758a06",
+        "android_client_info": {
+          "package_name": "com.example.tasktracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxkBR5R0tZ0uW_R5Nw-_5cU3lPpdFW17w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
