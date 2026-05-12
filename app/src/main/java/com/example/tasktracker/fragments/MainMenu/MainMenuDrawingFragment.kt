@@ -156,6 +156,28 @@ class MainMenuDrawingFragment : Fragment() {
         }
     }
 
+    fun getAllDrawings(): List<File> {
+        val drawingsDirectory = getDrawingsDirectory()
+        val drawings = mutableListOf<File>()
+
+        drawingsDirectory?.listFiles()?.forEach { file ->
+            if (file.isFile && file.name.endsWith(".png")) {
+                drawings.add(file)
+            }
+        }
+
+        return drawings
+    }
+
+    private fun getDrawingsDirectory(): File? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        } else {
+            val picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+            File(picturesDir, "TaskTrackerDrawings")
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

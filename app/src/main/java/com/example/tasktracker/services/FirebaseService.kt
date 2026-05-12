@@ -135,6 +135,14 @@ class FirebaseService {
         return fileWithId
     }
 
+    suspend fun updateFile(fileModel: TodoFileModel) {
+        filesCollection.document(fileModel.id).set(fileModel).await()
+    }
+
+    suspend fun deleteFile(fileId: String) {
+        filesCollection.document(fileId).delete().await()
+    }
+
     suspend fun getFilesByTask(taskId: String): List<TodoFileModel> {
         return filesCollection
             .whereEqualTo("todoId", taskId)
