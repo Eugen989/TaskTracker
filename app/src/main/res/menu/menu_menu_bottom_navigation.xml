@@ -11,6 +11,11 @@
         android:icon="@drawable/icon_menu_cash_register"/>
 
     <item
+        android:id="@+id/menu_drawing"
+        android:title="Drawing"
+        android:icon="@drawable/icon_draw"/>
+
+    <item
         android:id="@+id/menu_files"
         android:title="Files"
         android:icon="@drawable/icon_menu_files"/>

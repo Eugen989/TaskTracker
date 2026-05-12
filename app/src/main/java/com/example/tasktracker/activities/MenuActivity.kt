@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.example.tasktracker.R
 import com.example.tasktracker.databinding.ActivityMenuBinding
 import com.example.tasktracker.fragments.MainMenu.MainMenuAccountingFragment
+import com.example.tasktracker.fragments.MainMenu.MainMenuDrawingFragment
 import com.example.tasktracker.fragments.MainMenu.MainMenuFilesFragment
 import com.example.tasktracker.fragments.MainMenu.MainMenuFriendsFragment
 import com.example.tasktracker.fragments.MainMenu.MainMenuProjectsFragment
@@ -44,6 +45,7 @@ class MenuActivity : AppCompatActivity() {
             when(it.itemId) {
                 R.id.menu_tasks -> { replaceFragment(MainMenuProjectsFragment.newInstance()) }
                 R.id.menu_accounting -> { replaceFragment(MainMenuAccountingFragment.newInstance()) }
+                R.id.menu_drawing -> { replaceFragment(MainMenuDrawingFragment.newInstance()) }
                 R.id.menu_files -> { replaceFragment(MainMenuFilesFragment.newInstance()) }
                 R.id.menu_friends -> { replaceFragment(MainMenuFriendsFragment.newInstance()) }
             }
