@@ -11,6 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.example.tasktracker.components.PlanViewModel
 import com.example.tasktracker.databinding.BottomSheetCreatePlanBinding
 import com.example.tasktracker.models.PlanModel
+import com.example.tasktracker.utils.SPHelper
 import kotlinx.coroutines.launch
 
 class CreatePlanBottomSheet : BottomSheetDialogFragment() {
@@ -61,11 +62,18 @@ class CreatePlanBottomSheet : BottomSheetDialogFragment() {
         binding.btnCreate.text = "Создание..."
 
         val currentUserId = getCurrentUserId()
+        if (currentUserId.isEmpty()) {
+            Toast.makeText(requireContext(), "Ошибка: пользователь не авторизован", Toast.LENGTH_SHORT).show()
+            binding.btnCreate.isEnabled = true
+            binding.btnCreate.text = "Создать"
+            return
+        }
 
         planViewModel.createPlan(
             name = planName,
             description = planDescription,
             createdBy = currentUserId,
+            userIdList = listOf(currentUserId),
             onSuccess = { planId ->
                 Toast.makeText(requireContext(), "Проект \"$planName\" создан!", Toast.LENGTH_LONG).show()
 
@@ -90,19 +98,11 @@ class CreatePlanBottomSheet : BottomSheetDialogFragment() {
                 }
             }
         }
-
-        lifecycleScope.launch {
-            planViewModel.isLoading.collect { isLoading ->
-                if (!isLoading && binding.btnCreate.text != "Создать") {
-                    // Загрузка завершена, но диалог уже закроется через onSuccess
-                }
-            }
-        }
     }
 
     private fun getCurrentUserId(): String {
-        // TODO: Получайте реальный ID текущего пользователя
-        return "Eugenius"
+        val user = SPHelper.getInstance(requireContext()).getUser()
+        return user?.id ?: ""
     }
 
     fun setOnPlanCreatedListener(listener: (PlanModel) -> Unit) {

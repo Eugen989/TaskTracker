@@ -17,6 +17,7 @@ import com.example.tasktracker.components.dialogs.CreatePlanBottomSheet
 import com.example.tasktracker.components.decorations.ItemDecoration
 import com.example.tasktracker.databinding.FragmentMainMenuProjectsBinding
 import com.example.tasktracker.models.PlanModel
+import com.example.tasktracker.utils.SPHelper
 import kotlinx.coroutines.launch
 
 class MainMenuProjectsFragment : Fragment() {
@@ -31,8 +32,6 @@ class MainMenuProjectsFragment : Fragment() {
 
     private lateinit var planViewModel: PlanViewModel
     private lateinit var planAdapter: PlanListAdapter
-
-    private val currentUserId = "Eugenius" // Заменить на реальный ID
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,8 +48,20 @@ class MainMenuProjectsFragment : Fragment() {
         planViewModel = PlanViewModel()
         setupClickListeners()
         setupRecyclerViews()
-        loadData()
         observeViewModels()
+        loadData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadData()
+    }
+
+    private fun getCurrentUserId(): String {
+        val user = SPHelper.getInstance(requireContext()).getUser()
+        val userId = user?.id ?: ""
+        Log.d(TAG, "getCurrentUserId: $userId")
+        return userId
     }
 
     private fun setupClickListeners() {
@@ -60,9 +71,13 @@ class MainMenuProjectsFragment : Fragment() {
     }
 
     private fun showCreatePlanDialog() {
+        val currentUserId = getCurrentUserId()
+        if (currentUserId.isEmpty()) return
+
         val bottomSheet = CreatePlanBottomSheet()
         bottomSheet.setOnPlanCreatedListener { newPlan ->
-            planViewModel.loadPlansByUser(currentUserId)
+            Log.d(TAG, "Plan created: ${newPlan.name}")
+            loadData()
             Toast.makeText(requireContext(), "Проект \"${newPlan.name}\" создан!", Toast.LENGTH_SHORT).show()
         }
         bottomSheet.show(parentFragmentManager, "CreatePlanBottomSheet")
@@ -71,9 +86,11 @@ class MainMenuProjectsFragment : Fragment() {
     private fun setupRecyclerViews() {
         planAdapter = PlanListAdapter(
             onClick = { plan ->
+                Log.d(TAG, "Plan clicked: ${plan.name}")
                 navigateToTaskActivity(plan.id, plan.name)
             },
             onSettingsClick = { plan ->
+                Log.d(TAG, "Settings clicked for: ${plan.name}")
                 showPlanOptionsDialog(plan)
             }
         )
@@ -86,6 +103,7 @@ class MainMenuProjectsFragment : Fragment() {
     }
 
     private fun navigateToTaskActivity(planId: String, planName: String) {
+        val currentUserId = getCurrentUserId()
         val intent = Intent(requireContext(), TaskActivity::class.java)
         intent.putExtra("PLAN_ID", planId)
         intent.putExtra("PLAN_NAME", planName)
@@ -113,12 +131,14 @@ class MainMenuProjectsFragment : Fragment() {
     }
 
     private fun deletePlan(plan: PlanModel) {
+        val currentUserId = getCurrentUserId()
         androidx.appcompat.app.AlertDialog.Builder(requireContext())
             .setTitle("Удалить план")
             .setMessage("Вы уверены, что хотите удалить план \"${plan.name}\"?")
             .setPositiveButton("Удалить") { _, _ ->
                 planViewModel.deletePlan(plan.id, currentUserId) {
                     Toast.makeText(requireContext(), "План удален", Toast.LENGTH_SHORT).show()
+                    loadData()
                 }
             }
             .setNegativeButton("Отмена", null)
@@ -130,18 +150,29 @@ class MainMenuProjectsFragment : Fragment() {
     }
 
     private fun loadData() {
-        planViewModel.loadPlansByUser(currentUserId)
+        val currentUserId = getCurrentUserId()
+        Log.d(TAG, "loadData called for user: $currentUserId")
+        if (currentUserId.isNotEmpty()) {
+            planViewModel.loadPlansByUser(currentUserId)
+        } else {
+            Log.e(TAG, "User ID is empty!")
+        }
     }
 
     private fun observeViewModels() {
         lifecycleScope.launch {
             planViewModel.plans.collect { plans ->
+                Log.d(TAG, "Plans collected: ${plans.size} plans")
+                plans.forEach { plan ->
+                    Log.d(TAG, "Plan: id=${plan.id}, name=${plan.name}, userIdList=${plan.userIdList}, createdBy=${plan.createdBy}")
+                }
                 planAdapter.submitList(plans)
             }
         }
 
         lifecycleScope.launch {
             planViewModel.isLoading.collect { isLoading ->
+                Log.d(TAG, "isLoading: $isLoading")
                 binding.progressBar?.visibility = if (isLoading) View.VISIBLE else View.GONE
             }
         }

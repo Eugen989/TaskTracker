@@ -17,36 +17,33 @@ import java.util.Date
 class PlanViewModel : ViewModel() {
     private val firebaseService = FirebaseService()
 
-    // Список планов пользователя
     private val _plans = MutableStateFlow<List<PlanModel>>(emptyList())
     val plans: StateFlow<List<PlanModel>> = _plans.asStateFlow()
 
-    // Задачи выбранного плана
     private val _tasksOfPlan = MutableStateFlow<List<TodoTaskModel>>(emptyList())
     val tasksOfPlan: StateFlow<List<TodoTaskModel>> = _tasksOfPlan.asStateFlow()
 
-    // Текущий выбранный план
     private val _currentPlan = MutableStateFlow<PlanModel?>(null)
     val currentPlan: StateFlow<PlanModel?> = _currentPlan.asStateFlow()
 
-    // Состояния загрузки и ошибок
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    /**
-     * Загрузка всех планов пользователя
-     */
     fun loadPlansByUser(userId: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                _plans.value = firebaseService.getPlansByUser(userId)
+                Log.d("PlanViewModel", "loadPlansByUser called for userId: $userId")
+                val plans = firebaseService.getPlansByUser(userId)
+                Log.d("PlanViewModel", "loadPlansByUser received ${plans.size} plans")
+                _plans.value = plans
             } catch (e: Exception) {
                 _error.value = e.message
+                Log.e("PlanViewModel", "Error loading plans: ${e.message}")
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false
@@ -54,9 +51,6 @@ class PlanViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Загрузка планов, созданных пользователем
-     */
     fun loadPlansCreatedByUser(userId: String) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -72,9 +66,6 @@ class PlanViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Загрузка задач конкретного плана
-     */
     fun loadTasksByPlan(planId: String) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -90,18 +81,6 @@ class PlanViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Создание нового плана
-     */
-    /**
-     * Создание нового плана
-     */
-    /**
-     * Создание нового плана
-     */
-    /**
-     * Создание нового плана
-     */
     fun createPlan(
         name: String,
         description: String,
@@ -115,7 +94,8 @@ class PlanViewModel : ViewModel() {
             _isLoading.value = true
             _error.value = null
             try {
-                // Загружаем дефолтные типы и приоритеты
+                Log.d("PlanViewModel", "Creating plan for user: $createdBy")
+
                 var finalTodoTypeIds = todoTypeIdList
                 var finalPriorityIds = priorityIdList
 
@@ -136,14 +116,17 @@ class PlanViewModel : ViewModel() {
                     createdBy = createdBy
                 )
 
-                Log.d("PlanViewModel", "Creating plan with todoTypeIdList: ${plan.todoTypeIdList}")
-                Log.d("PlanViewModel", "Creating plan with priorityIdList: ${plan.priorityIdList}")
+                Log.d("PlanViewModel", "Creating plan with createdBy: ${plan.createdBy}")
+                Log.d("PlanViewModel", "Creating plan with userIdList: ${plan.userIdList}")
 
                 val planId = firebaseService.createPlan(plan)
+                Log.d("PlanViewModel", "Plan created with ID: $planId")
+
                 loadPlansByUser(createdBy)
                 onSuccess(planId)
             } catch (e: Exception) {
                 _error.value = e.message
+                Log.e("PlanViewModel", "Error creating plan: ${e.message}")
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false
@@ -151,9 +134,6 @@ class PlanViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Получение или создание дефолтных типов задач в Firebase
-     */
     private suspend fun getOrCreateDefaultTodoTypes(): List<String> {
         return try {
             var todoTypes = firebaseService.getTodoTypes()
@@ -185,9 +165,6 @@ class PlanViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Получение или создание дефолтных приоритетов в Firebase
-     */
     private suspend fun getOrCreateDefaultPriorities(): List<String> {
         return try {
             var priorities = firebaseService.getPriorities()
@@ -195,7 +172,6 @@ class PlanViewModel : ViewModel() {
             if (priorities.isEmpty()) {
                 Log.d("PlanViewModel", "No priorities found in Firebase, creating defaults...")
 
-                // Создаем дефолтные приоритеты в Firebase
                 val defaultPriorities = PriorityModel.getDefaults()
                 val createdIds = mutableListOf<String>()
 
@@ -205,7 +181,6 @@ class PlanViewModel : ViewModel() {
                     Log.d("PlanViewModel", "Created priority: ${priority.name} with ID: $id")
                 }
 
-                // Перезагружаем список
                 priorities = firebaseService.getPriorities()
                 priorities.map { it.id }
             } else {
@@ -214,14 +189,10 @@ class PlanViewModel : ViewModel() {
             }
         } catch (e: Exception) {
             Log.e("PlanViewModel", "Error getting/creating priorities: ${e.message}")
-            // Возвращаем временные ID
             listOf("temp_priority_1", "temp_priority_2", "temp_priority_3")
         }
     }
 
-    /**
-     * Загрузка всех типов задач из Firebase
-     */
     fun loadTodoTypes(onSuccess: (List<TodoTypeModel>) -> Unit = {}) {
         viewModelScope.launch {
             try {
@@ -234,9 +205,6 @@ class PlanViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Загрузка всех приоритетов из Firebase
-     */
     fun loadPriorities(onSuccess: (List<PriorityModel>) -> Unit = {}) {
         viewModelScope.launch {
             try {
@@ -249,9 +217,6 @@ class PlanViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Обновление плана
-     */
     fun updatePlan(plan: PlanModel, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -268,9 +233,6 @@ class PlanViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Удаление плана
-     */
     fun deletePlan(planId: String, userId: String, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -287,17 +249,11 @@ class PlanViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Выбор плана для работы
-     */
     fun selectPlan(plan: PlanModel) {
         _currentPlan.value = plan
         loadTasksByPlan(plan.id)
     }
 
-    /**
-     * Добавление пользователя в план
-     */
     fun addUserToPlan(planId: String, userId: String, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             try {
@@ -317,9 +273,6 @@ class PlanViewModel : ViewModel() {
         }
     }
 
-    /**
-     * Добавление задачи в план
-     */
     fun addTaskToPlan(planId: String, taskId: String, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             try {

@@ -1,5 +1,6 @@
 package com.example.tasktracker.fragments.Authentication
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,8 +10,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.tasktracker.activities.AuthenticationActivity
+import com.example.tasktracker.activities.MainActivity
 import com.example.tasktracker.components.RegistrationViewModel
 import com.example.tasktracker.databinding.FragmentRegistrationBinding
+import com.example.tasktracker.utils.SPHelper
 import kotlinx.coroutines.launch
 
 class AuthenticationRegistrationFragment : Fragment() {
@@ -74,12 +77,13 @@ class AuthenticationRegistrationFragment : Fragment() {
             binding.mbRegistration.text = "Зарегистрироваться"
 
             result.onSuccess { user ->
+                SPHelper.getInstance(requireContext()).saveUser(user)
                 Toast.makeText(requireContext(), "Регистрация успешна!", Toast.LENGTH_LONG).show()
-                Log.d(TAG, "User created: ${user.login}")
 
-                (activity as AuthenticationActivity).replaceFragment(
-                    AuthenticationLoginFragment.newInstance()
-                )
+                val intent = Intent(requireContext(), MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                activity?.finish()
             }.onFailure { error ->
                 Toast.makeText(requireContext(), "Ошибка: ${error.message}", Toast.LENGTH_LONG).show()
                 Log.e(TAG, "Registration error: ${error.message}")

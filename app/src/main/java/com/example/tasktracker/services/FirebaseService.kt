@@ -9,6 +9,8 @@ import kotlinx.coroutines.tasks.await
 import java.util.Date
 
 class FirebaseService {
+    private val TAG = "FirebaseService"
+
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance().reference
 
@@ -27,7 +29,13 @@ class FirebaseService {
     // ========== РАБОТА С ПОЛЬЗОВАТЕЛЯМИ ==========
 
     suspend fun createUser(userModel: UserModel): String {
-        val docRef = usersCollection.document(userModel.id)
+        val userId = userModel.id ?: ""
+        val docRef = if (userId.isNotEmpty()) {
+            usersCollection.document(userId)
+        } else {
+            Log.d(TAG, "createUser error")
+            usersCollection.document()
+        }
         docRef.set(userModel).await()
         return docRef.id
     }
@@ -54,7 +62,12 @@ class FirebaseService {
     }
 
     suspend fun updateUser(userModel: UserModel) {
-        usersCollection.document(userModel.id).set(userModel).await()
+        val userId = userModel.id ?: ""
+        val docRef = if (userId.isNotEmpty()) {
+            usersCollection.document(userId).set(userModel).await()
+        } else {
+            Log.d(TAG, "updateUser error")
+        }
     }
 
     // ========== РАБОТА С ЗАДАЧАМИ ==========

@@ -23,7 +23,6 @@ class TaskListAdapter(
         parent: ViewGroup,
         viewType: Int
     ): TaskListHolder {
-        Log.d(TAG, TAG + " init")
         return TaskListHolder(
             ItemTaskListBinding
                 .inflate(LayoutInflater.from(parent.context), parent, false),
@@ -35,7 +34,6 @@ class TaskListAdapter(
         holder: TaskListHolder,
         position: Int
     ) {
-        Log.d(TAG, TAG + " holder")
         holder.bind(items[position])
     }
 

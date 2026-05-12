@@ -11,6 +11,7 @@ import com.example.tasktracker.fragments.MainMenu.MainMenuAccountingFragment
 import com.example.tasktracker.fragments.MainMenu.MainMenuFilesFragment
 import com.example.tasktracker.fragments.MainMenu.MainMenuFriendsFragment
 import com.example.tasktracker.fragments.MainMenu.MainMenuProjectsFragment
+import com.example.tasktracker.utils.SPHelper
 
 class MenuActivity : AppCompatActivity() {
     private val TAG = "MenuActivity"
@@ -20,7 +21,6 @@ class MenuActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        Log.d(TAG, TAG + " init")
 
         _binding = ActivityMenuBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -28,9 +28,13 @@ class MenuActivity : AppCompatActivity() {
         initView()
     }
 
-    fun initView() {
-//        Log.d(TAG, "init")
+    override fun onResume() {
+        super.onResume()
+        updateUserInfo()
+        refreshCurrentFragment()
+    }
 
+    fun initView() {
         binding.bottomNavigationView.selectedItemId = R.id.menu_tasks
         replaceFragment(MainMenuProjectsFragment.newInstance())
 
@@ -45,10 +49,28 @@ class MenuActivity : AppCompatActivity() {
             }
             true
         }
+
+        updateUserInfo()
+    }
+
+    private fun refreshCurrentFragment() {
+        val currentFragment = supportFragmentManager.findFragmentById(binding.fragmentContainer.id)
+        if (currentFragment is MainMenuProjectsFragment) {
+            replaceFragment(MainMenuProjectsFragment.newInstance())
+        }
+    }
+
+    private fun updateUserInfo() {
+        val user = SPHelper.getInstance(this).getUser()
+        if (user != null && user.login!!.isNotEmpty()) {
+            binding.tvUserTitle.text = user.login
+            Log.d(TAG, "updateUserInfo - " + user.login)
+        } else {
+            binding.tvUserTitle.text = "Гость"
+        }
     }
 
     fun replaceFragment(fragment: Fragment) {
-//        Log.d(TAG, "replaceFragment tag - " + fragment.tag + " " + fragment)
         supportFragmentManager.beginTransaction()
             .replace(
                 binding.fragmentContainer.id,

@@ -1,6 +1,7 @@
 package com.example.tasktracker.adapters
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,8 @@ class PlanListAdapter(
     private var items: List<PlanModel> = emptyList()
 ) : RecyclerView.Adapter<PlanListAdapter.PlanViewHolder>() {
 
+    private val TAG = "PlanListAdapter"
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlanViewHolder {
         val binding = ItemPlanBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -23,13 +26,18 @@ class PlanListAdapter(
     }
 
     override fun onBindViewHolder(holder: PlanViewHolder, position: Int) {
+        Log.d(TAG, "onBindViewHolder position: $position, item: ${items[position].name}")
         holder.bind(items[position])
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int {
+        Log.d(TAG, "getItemCount: ${items.size}")
+        return items.size
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     fun submitList(newItems: List<PlanModel>) {
+        Log.d(TAG, "submitList called with ${newItems.size} items")
         items = newItems
         notifyDataSetChanged()
     }
@@ -43,11 +51,8 @@ class PlanListAdapter(
         fun bind(plan: PlanModel) {
             val firstLetter = if (plan.name.isNotEmpty()) plan.name.first().uppercase() else "П"
             binding.mbTitleProject.text = firstLetter
-
             binding.tvTitleProject.text = plan.name
-
             binding.root.setOnClickListener { onClick(plan) }
-
             binding.ivSettingsProject.setOnClickListener { onSettingsClick(plan) }
         }
     }

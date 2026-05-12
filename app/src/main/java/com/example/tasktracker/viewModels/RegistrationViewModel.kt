@@ -31,13 +31,12 @@ class RegistrationViewModel : ViewModel() {
                 return Result.failure(Exception("Пользователь с таким логином уже существует"))
             }
 
-            // Создаем нового пользователя
             val userModel = UserModel(
-                id = login, // Используем логин как ID для простоты
+                id = login,
                 name = name,
                 login = login,
                 email = email,
-                password = password // В реальном приложении нужно хэшировать!
+                password = password
             )
 
             firebaseService.createUser(userModel)

@@ -4,13 +4,16 @@ import com.google.firebase.firestore.DocumentId
 import com.google.firebase.firestore.ServerTimestamp
 import java.util.Date
 
-data class UserModel(
-    @DocumentId val id: String = "",
-    val name: String = "",
-    val email: String = "",
-    val login: String = "",
-    val password: String = "",
-    val planIdList: List<String> = emptyList(),
-    @ServerTimestamp val dataTime: Date? = null,
-    @ServerTimestamp val dataTimeUpdate: Date? = null
+data class UserModel (
+    @DocumentId
+    var id: String? = null,
+    var name: String? = null,
+    var email: String? = null,
+    var login: String? = null,
+    var password: String? = null,
+    var planIdList: MutableList<String?>? = null,
+
+    @ServerTimestamp var dataTime: Date? = null,
+
+    @ServerTimestamp var dataTimeUpdate: Date? = null,
 )
