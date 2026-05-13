@@ -13,5 +13,6 @@ data class TodoFileTypeModel(
         const val TYPE_DOCUMENT = 3
         const val TYPE_PDF = 4
         const val TYPE_ARCHIVE = 5
+        const val TYPE_ACCOUNTING = 6
     }
 }

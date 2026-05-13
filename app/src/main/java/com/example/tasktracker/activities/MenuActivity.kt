@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.example.tasktracker.R
 import com.example.tasktracker.databinding.ActivityMenuBinding
 import com.example.tasktracker.fragments.MainMenu.MainMenuAccountingFragment
+import com.example.tasktracker.fragments.MainMenu.MainMenuServiceConnectingFragment
 import com.example.tasktracker.fragments.MainMenu.MainMenuDrawingFragment
 import com.example.tasktracker.fragments.MainMenu.MainMenuFilesFragment
 import com.example.tasktracker.fragments.MainMenu.MainMenuFriendsFragment

@@ -10,6 +10,7 @@ data class TodoFileModel(
     val todoId: String = "",
     val fileTypeId: String = "",
     val fileUrl: String = "",
+    val accountingId: String = "",
     val isFavorite: Boolean = false,
     @ServerTimestamp val uploadedAt: Date? = null
 )

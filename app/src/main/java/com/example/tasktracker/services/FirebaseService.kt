@@ -22,6 +22,7 @@ class FirebaseService {
     private val todoTypesCollection = db.collection("TodoTypes")
     private val importanceCollection = db.collection("Importance")
     private val fileTypesCollection = db.collection("FileTypes")
+    private val accountingCollection = db.collection("Accounting")
 
     private val plansCollection = db.collection("Plans")
     private val prioritiesCollection = db.collection("Priorities")
@@ -157,6 +158,107 @@ class FirebaseService {
             fileRef.delete().await()
         } catch (e: Exception) {
             // Файл мог быть уже удален
+        }
+    }
+
+    // ========== РАБОТА С УЧЕТОМ ПРОДАЖ (ACCOUNTING) ==========
+
+    suspend fun createAccounting(accounting: AccountingModel): String {
+        val docRef = accountingCollection.document()
+        val accountingWithId = accounting.copy(id = docRef.id)
+        docRef.set(accountingWithId).await()
+        return docRef.id
+    }
+
+    suspend fun getAccountingById(accountingId: String): AccountingModel? {
+        return try {
+            accountingCollection.document(accountingId).get().await().toObject(AccountingModel::class.java)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    suspend fun getAccountingByUser(userId: String): List<AccountingModel> {
+        return try {
+            val result = accountingCollection
+                .whereEqualTo("createdBy", userId)
+                .orderBy("transactionDate", Query.Direction.DESCENDING)
+                .get()
+                .await()
+            val accountingList = result.toObjects(AccountingModel::class.java)
+            Log.d(TAG, "Found ${accountingList.size} accounting records for user: $userId")
+            accountingList
+        } catch (e: Exception) {
+            Log.e(TAG, "Error getting accounting: ${e.message}")
+            emptyList()
+        }
+    }
+
+    suspend fun getAccountingByFile(fileId: String): List<AccountingModel> {
+        return try {
+            accountingCollection
+                .whereEqualTo("fileId", fileId)
+                .get()
+                .await()
+                .toObjects(AccountingModel::class.java)
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    suspend fun updateAccounting(accounting: AccountingModel) {
+        val updates = mutableMapOf<String, Any>(
+            "title" to accounting.title,
+            "description" to accounting.description,
+            "fileId" to accounting.fileId,
+            "buyerName" to accounting.buyerName,
+            "buyerContacts" to accounting.buyerContacts,
+            "price" to accounting.price,
+            "currency" to accounting.currency,
+            "updatedAt" to Date()
+        )
+        accountingCollection.document(accounting.id).update(updates).await()
+    }
+
+    suspend fun deleteAccounting(accountingId: String) {
+        accountingCollection.document(accountingId).delete().await()
+    }
+
+    suspend fun getAccountingWithFile(accountingId: String): Pair<AccountingModel, TodoFileModel?> {
+        val accounting = getAccountingById(accountingId) ?: return Pair(AccountingModel(), null)
+        val file = if (accounting.fileId.isNotEmpty()) {
+            getFileById(accounting.fileId)
+        } else null
+        return Pair(accounting, file)
+    }
+
+    suspend fun getAllAccountingWithFiles(userId: String): List<Pair<AccountingModel, TodoFileModel?>> {
+        Log.d(TAG, "=== getAllAccountingWithFiles START ===")
+        Log.d(TAG, "userId: $userId")
+
+        val accountingList = getAccountingByUser(userId)
+        Log.d(TAG, "getAccountingByUser returned ${accountingList.size} records")
+
+        val result = mutableListOf<Pair<AccountingModel, TodoFileModel?>>()
+
+        for (accounting in accountingList) {
+            Log.d(TAG, "Processing accounting: id=${accounting.id}, title=${accounting.title}, fileId=${accounting.fileId}")
+            val file = if (accounting.fileId.isNotEmpty()) {
+                getFileById(accounting.fileId)
+            } else null
+            result.add(Pair(accounting, file))
+        }
+
+        Log.d(TAG, "Returning ${result.size} pairs")
+        Log.d(TAG, "=== getAllAccountingWithFiles END ===")
+        return result
+    }
+
+    suspend fun getFileById(fileId: String): TodoFileModel? {
+        return try {
+            filesCollection.document(fileId).get().await().toObject(TodoFileModel::class.java)
+        } catch (e: Exception) {
+            null
         }
     }
 
