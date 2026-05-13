@@ -12,7 +12,9 @@ data class TodoTaskModel(
     val priorityId: String = "",
     val userId: String = "",
     val planId: String = "",
-    val dataTimeStart: Date? = null,
-    val dataTimeEnd: Date? = null,
-    @ServerTimestamp val createdAt: Date? = null
+    val isCompleted: Boolean = false,
+    @ServerTimestamp val dataTimeStart: Date? = null,
+    @ServerTimestamp val dataTimeEnd: Date? = null,
+    @ServerTimestamp val createdAt: Date? = null,
+    @ServerTimestamp val updatedAt: Date? = null
 )

@@ -15,6 +15,8 @@ import kotlinx.coroutines.launch
 import java.util.Date
 
 class PlanViewModel : ViewModel() {
+    private val TAG = "PlanViewModel"
+
     private val firebaseService = FirebaseService()
 
     private val _plans = MutableStateFlow<List<PlanModel>>(emptyList())
@@ -236,12 +238,15 @@ class PlanViewModel : ViewModel() {
     fun deletePlan(planId: String, userId: String, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             _isLoading.value = true
+            _error.value = null
             try {
+                Log.d(TAG, "Deleting plan: $planId with all tasks")
                 firebaseService.deletePlan(planId)
                 loadPlansByUser(userId)
                 onSuccess()
             } catch (e: Exception) {
                 _error.value = e.message
+                Log.e(TAG, "Error deleting plan: ${e.message}")
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false

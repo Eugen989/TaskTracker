@@ -1,65 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp">
 
     <LinearLayout
+        android:id="@+id/layoutTodoContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:background="@drawable/bg_task_item"
+        android:orientation="horizontal">
 
+        <CheckBox
+            android:id="@+id/cbTaskCompleted"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical" />
 
         <LinearLayout
-            android:id="@+id/layoutTodoContainer"
-            android:layout_width="match_parent"
+            android:id="@+id/layoutTodoInformationContainer"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
 
-            <CheckBox
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"/>
-            <LinearLayout
-                android:id="@+id/layoutTodoInformationContainer"
+            <TextView
+                android:id="@+id/tvItemTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginLeft="8dp">
+                android:text="Title"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#333333" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tvItemTitle"
-                    android:layout_width="match_parent"
+                    android:id="@+id/tvData"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Title"/>
+                    android:layout_weight="1"
+                    android:text="Дата"
+                    android:textSize="12sp"
+                    android:textColor="#666666" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:id="@+id/tvData"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="4"
-                        android:text="Data"/>
-                    <TextView
-                        android:id="@+id/tvItemUser"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:text="User"/>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="5"
-                        android:text="Project"
-                        android:textAlignment="textEnd"/>
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/tvPriority"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Приоритет"
+                    android:textSize="12sp"
+                    android:textColor="#666666" />
+
+                <TextView
+                    android:id="@+id/tvStatus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Статус"
+                    android:textSize="12sp"
+                    android:textColor="#666666"
+                    android:textAlignment="textEnd" />
 
             </LinearLayout>
 
         </LinearLayout>
-
-
 
     </LinearLayout>
 

@@ -3,6 +3,8 @@ package com.example.tasktracker.activities
 import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -31,10 +33,11 @@ class TaskActivity : AppCompatActivity() {
     private var dateMonth: Int = 0
     private var dateYear: Int = 0
 
-    // Данные из Intent
     private var currentPlanId: String? = null
     private var currentPlanName: String? = null
     private var currentUserId: String? = null
+
+    private var currentSearchQuery: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,20 +55,86 @@ class TaskActivity : AppCompatActivity() {
 
         initView()
         changeDisplay()
+        setupSearch()
     }
 
     fun initView() {
         binding.ivTransitionToMenu.setOnClickListener { transitionToMenuActivity() }
         binding.mbtnDisplayType.setOnClickListener { onDisplayTypeDialog() }
 
-        binding.etNewTask.setOnClickListener {
+        binding.btnCreateTask.setOnClickListener {
             showCreateTaskDialog()
         }
-        binding.etNewTask.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                showCreateTaskDialog()
-            }
+
+        binding.ivSort.setOnClickListener {
+            showSortDialog()
         }
+
+        binding.ivFilter.setOnClickListener {
+            showFilterDialog()
+        }
+
+        binding.ivSearchButton.setOnClickListener {
+            performSearch()
+        }
+    }
+
+    private fun setupSearch() {
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                currentSearchQuery = s?.toString()?.trim() ?: ""
+                performSearch()
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun performSearch() {
+        val fragment = supportFragmentManager.findFragmentByTag("TaskListFragment")
+        if (fragment is TaskListFragment) {
+            fragment.searchTasks(currentSearchQuery)
+        }
+    }
+
+    private fun showSortDialog() {
+        val sortOptions = arrayOf("По дате создания", "По названию", "По статусу", "По приоритету")
+
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Сортировка")
+            .setItems(sortOptions) { _, which ->
+                val fragment = supportFragmentManager.findFragmentByTag("TaskListFragment")
+                if (fragment is TaskListFragment) {
+                    when (which) {
+                        0 -> fragment.sortTasks("date")
+                        1 -> fragment.sortTasks("title")
+                        2 -> fragment.sortTasks("status")
+                        3 -> fragment.sortTasks("priority")
+                    }
+                }
+            }
+            .show()
+    }
+
+    private fun showFilterDialog() {
+        val filterOptions = arrayOf("Все задачи", "Выполненные", "Не выполненные", "Просроченные")
+
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Фильтр")
+            .setItems(filterOptions) { _, which ->
+                val fragment = supportFragmentManager.findFragmentByTag("TaskListFragment")
+                if (fragment is TaskListFragment) {
+                    when (which) {
+                        0 -> fragment.filterTasks("all")
+                        1 -> fragment.filterTasks("completed")
+                        2 -> fragment.filterTasks("pending")
+                        3 -> fragment.filterTasks("overdue")
+                    }
+                }
+            }
+            .show()
     }
 
     private fun showCreateTaskDialog() {
@@ -93,8 +162,6 @@ class TaskActivity : AppCompatActivity() {
                     .replace(binding.fragmentContainer.id, newFragment, "TaskListFragment")
                     .commit()
             }
-
-            binding.etNewTask.text?.clear()
         }
         dialog.show(supportFragmentManager, "CreateTaskDialog")
     }
@@ -143,6 +210,11 @@ class TaskActivity : AppCompatActivity() {
             dateDay = dayOfMonth
             dateMonth = monthOfYear
             dateYear = year
+
+            val fragment = supportFragmentManager.findFragmentByTag("TaskListFragment")
+            if (fragment is TaskListFragment) {
+                fragment.filterByDate(dateYear, dateMonth, dateDay)
+            }
         }
 
         val fragment = TaskListFragment.newInstance()

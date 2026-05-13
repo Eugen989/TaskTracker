@@ -50,7 +50,6 @@ class CreatePlanBottomSheet : BottomSheetDialogFragment() {
 
     private fun createPlan() {
         val planName = binding.etPlanName.text.toString().trim()
-        val planDescription = binding.etPlanDescription.text.toString().trim()
 
         if (planName.isEmpty()) {
             binding.etPlanName.error = "Введите название проекта"
@@ -71,7 +70,7 @@ class CreatePlanBottomSheet : BottomSheetDialogFragment() {
 
         planViewModel.createPlan(
             name = planName,
-            description = planDescription,
+            description = "",
             createdBy = currentUserId,
             userIdList = listOf(currentUserId),
             onSuccess = { planId ->
@@ -80,7 +79,7 @@ class CreatePlanBottomSheet : BottomSheetDialogFragment() {
                 val newPlan = PlanModel(
                     id = planId,
                     name = planName,
-                    description = planDescription,
+                    description = "",
                     userIdList = listOf(currentUserId),
                     createdBy = currentUserId
                 )

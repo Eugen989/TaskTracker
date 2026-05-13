@@ -59,6 +59,9 @@ class TaskListFragment : Fragment() {
             onClick = { task ->
                 updateElementFragment(task)
             },
+            onStatusChanged = { task, isChecked ->
+                updateTaskStatus(task, isChecked)
+            },
             items = emptyList()
         )
 
@@ -70,14 +73,12 @@ class TaskListFragment : Fragment() {
         )
         binding.rvTasks.adapter = adapter
 
-        // Наблюдаем за задачами
         lifecycleScope.launch {
             taskViewModel.tasks.collect { tasks ->
                 adapter.submitList(tasks)
             }
         }
 
-        // Наблюдаем за ошибками
         lifecycleScope.launch {
             taskViewModel.error.collect { error ->
                 error?.let {
@@ -87,8 +88,15 @@ class TaskListFragment : Fragment() {
             }
         }
 
-        // Загружаем задачи
         loadTasks()
+    }
+
+    private fun updateTaskStatus(task: TodoTaskModel, isCompleted: Boolean) {
+        val updatedTask = task.copy(isCompleted = isCompleted)
+        taskViewModel.updateTask(updatedTask) {
+            Log.d(TAG, "Task status updated: ${task.title} -> isCompleted=$isCompleted")
+            refreshTasks()
+        }
     }
 
     private fun loadTasks() {
@@ -103,6 +111,22 @@ class TaskListFragment : Fragment() {
                 Log.w(TAG, "No PLAN_ID or USER_ID provided")
             }
         }
+    }
+
+    fun searchTasks(query: String) {
+        taskViewModel.searchTasks(query)
+    }
+
+    fun sortTasks(criteria: String) {
+        taskViewModel.sortTasks(criteria)
+    }
+
+    fun filterTasks(criteria: String) {
+        taskViewModel.filterTasks(criteria)
+    }
+
+    fun filterByDate(year: Int, month: Int, day: Int) {
+        taskViewModel.filterByDate(year, month, day)
     }
 
     fun updateElementFragment(task: TodoTaskModel) {

@@ -100,18 +100,24 @@ class FirebaseService {
     suspend fun deleteTask(taskId: String) {
         deleteTaskRelatedData(taskId)
         tasksCollection.document(taskId).delete().await()
+        Log.d(TAG, "Task deleted: $taskId")
     }
 
     private suspend fun deleteTaskRelatedData(taskId: String) {
-        val files = getFilesByTask(taskId)
-        files.forEach { file ->
-            deleteFileFromStorage(file.fileUrl)
-            filesCollection.document(file.id).delete().await()
-        }
+        try {
+            val files = getFilesByTask(taskId)
+            files.forEach { file ->
+                deleteFileFromStorage(file.fileUrl)
+                filesCollection.document(file.id).delete().await()
+            }
 
-        val comments = getCommentsByTask(taskId)
-        comments.forEach { comment ->
-            commentsCollection.document(comment.id).delete().await()
+            val comments = getCommentsByTask(taskId)
+            comments.forEach { comment ->
+                commentsCollection.document(comment.id).delete().await()
+            }
+            Log.d(TAG, "Deleted ${files.size} files and ${comments.size} comments for task: $taskId")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error deleting task related data: ${e.message}")
         }
     }
 
@@ -443,7 +449,17 @@ class FirebaseService {
     }
 
     suspend fun deletePlan(planId: String) {
-        plansCollection.document(planId).delete().await()
+        try {
+            val tasks = getTasksByPlan(planId)
+            for (task in tasks) {
+                deleteTask(task.id)
+            }
+            plansCollection.document(planId).delete().await()
+            Log.d(TAG, "Plan and ${tasks.size} tasks deleted successfully")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error deleting plan: ${e.message}")
+            throw e
+        }
     }
 
     suspend fun addUserToPlan(planId: String, userId: String) {
