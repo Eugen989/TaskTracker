@@ -26,12 +26,32 @@
             android:layout_marginTop="32dp"
             android:hint="Введите логин"/>
 
-        <EditText
-            android:id="@+id/etPassword"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="Введите пароль"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Введите пароль"
+                android:inputType="textPassword" />
+
+            <ImageView
+                android:id="@+id/ivTogglePassword"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/icon_eye_closed"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             style="@style/H16Regular"
@@ -48,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Зарегестрироваться"
+            android:text="Зарегистрироваться"
             android:textColor="@color/blue"
             android:background="@drawable/shape_button_active_square"
             app:backgroundTint="@null"

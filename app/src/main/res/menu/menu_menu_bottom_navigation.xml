@@ -21,6 +21,7 @@
         android:icon="@drawable/icon_menu_files"/>
 
     <item
+        android:visible="false"
         android:id="@+id/menu_friends"
         android:title="Friends"
         android:icon="@drawable/icon_menu_friends"/>

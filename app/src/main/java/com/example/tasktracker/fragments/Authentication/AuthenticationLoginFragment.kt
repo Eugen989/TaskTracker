@@ -2,13 +2,16 @@ package com.example.tasktracker.fragments.Authentication
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.tasktracker.R
 import com.example.tasktracker.activities.AuthenticationActivity
 import com.example.tasktracker.activities.MainActivity
 import com.example.tasktracker.components.LoginViewModel
@@ -24,6 +27,7 @@ class AuthenticationLoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
+    private var isPasswordVisible = false
 
     private lateinit var viewModel: LoginViewModel
 
@@ -37,11 +41,32 @@ class AuthenticationLoginFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        Log.d(TAG, "init")
-
         viewModel = LoginViewModel()
 
         setupClickListeners()
+        setupPasswordToggle()
+    }
+
+    private fun setupPasswordToggle() {
+        binding.ivTogglePassword.setOnClickListener {
+            if (isPasswordVisible) {
+                // Скрыть пароль
+                binding.etPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                binding.ivTogglePassword.setImageDrawable(
+                    ContextCompat.getDrawable(requireContext(), R.drawable.icon_eye_closed)
+                )
+                isPasswordVisible = false
+            } else {
+                // Показать пароль
+                binding.etPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                binding.ivTogglePassword.setImageDrawable(
+                    ContextCompat.getDrawable(requireContext(), R.drawable.icon_eye_open)
+                )
+                isPasswordVisible = true
+            }
+            // Устанавливаем курсор в конец текста
+            binding.etPassword.setSelection(binding.etPassword.text?.length ?: 0)
+        }
     }
 
     fun setupClickListeners() {
@@ -80,5 +105,10 @@ class AuthenticationLoginFragment : Fragment() {
                 Toast.makeText(requireContext(), "Ошибка: ${error.message}", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

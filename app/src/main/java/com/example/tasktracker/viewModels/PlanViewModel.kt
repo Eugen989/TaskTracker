@@ -143,7 +143,6 @@ class PlanViewModel : ViewModel() {
             if (todoTypes.isEmpty()) {
                 Log.d("PlanViewModel", "No todoTypes found in Firebase, creating defaults...")
 
-                // Создаем дефолтные типы задач в Firebase
                 val defaultTodoTypes = TodoTypeModel.getDefaults()
                 val createdIds = mutableListOf<String>()
 
@@ -153,7 +152,6 @@ class PlanViewModel : ViewModel() {
                     Log.d("PlanViewModel", "Created todoType: ${todoType.name} with ID: $id")
                 }
 
-                // Перезагружаем список
                 todoTypes = firebaseService.getTodoTypes()
                 todoTypes.map { it.id }
             } else {
@@ -162,7 +160,6 @@ class PlanViewModel : ViewModel() {
             }
         } catch (e: Exception) {
             Log.e("PlanViewModel", "Error getting/creating todoTypes: ${e.message}")
-            // Возвращаем временные ID
             listOf("temp_type_1", "temp_type_2", "temp_type_3", "temp_type_4")
         }
     }
@@ -219,15 +216,18 @@ class PlanViewModel : ViewModel() {
         }
     }
 
-    fun updatePlan(plan: PlanModel, onSuccess: () -> Unit = {}) {
+    fun updatePlan(plan: PlanModel, userId: String, onSuccess: () -> Unit = {}) {
         viewModelScope.launch {
             _isLoading.value = true
+            _error.value = null
             try {
+                Log.d(TAG, "Updating plan: ${plan.id}, new name: ${plan.name}")
                 firebaseService.updatePlan(plan)
-                loadPlansByUser(plan.createdBy)
+                loadPlansByUser(userId)
                 onSuccess()
             } catch (e: Exception) {
                 _error.value = e.message
+                Log.e(TAG, "Error updating plan: ${e.message}")
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false

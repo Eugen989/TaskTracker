@@ -3,10 +3,11 @@ package com.example.tasktracker.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tasktracker.R
 import com.example.tasktracker.databinding.ItemFileBinding
 import com.example.tasktracker.models.TodoFileModel
-import com.example.tasktracker.models.TodoFileTypeModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -65,6 +66,16 @@ class FileAdapter(
                 binding.tvFileDate.text = dateFormat.format(it)
             } ?: run {
                 binding.tvFileDate.text = "Дата неизвестна"
+            }
+
+            // Отображение иконки избранного
+            if (fileItem.isFavorite) {
+                binding.ivFavorite.visibility = android.view.View.VISIBLE
+                binding.ivFavorite.setImageDrawable(
+                    ContextCompat.getDrawable(binding.root.context, R.drawable.icon_favorite_filled)
+                )
+            } else {
+                binding.ivFavorite.visibility = android.view.View.GONE
             }
 
             binding.root.setOnClickListener {

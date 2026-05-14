@@ -2,13 +2,17 @@ package com.example.tasktracker.fragments.Authentication
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.example.tasktracker.R
 import com.example.tasktracker.activities.AuthenticationActivity
 import com.example.tasktracker.activities.MainActivity
 import com.example.tasktracker.components.RegistrationViewModel
@@ -20,10 +24,12 @@ class AuthenticationRegistrationFragment : Fragment() {
     companion object {
         fun newInstance(): AuthenticationRegistrationFragment = AuthenticationRegistrationFragment()
     }
-    private val TAG = "AuthenticationLoginFragment"
+    private val TAG = "AuthenticationRegistrationFragment"
 
     private var _binding: FragmentRegistrationBinding? = null
     private val binding get() = _binding!!
+    private var isPasswordVisible = false
+    private var isConfirmPasswordVisible = false
 
     private lateinit var viewModel: RegistrationViewModel
 
@@ -37,11 +43,48 @@ class AuthenticationRegistrationFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        Log.d(TAG, "init")
-
         viewModel = RegistrationViewModel()
 
         setupClickListeners()
+        setupPasswordToggles()
+    }
+
+    private fun setupPasswordToggles() {
+        // Тогл для пароля
+        binding.ivTogglePassword.setOnClickListener {
+            if (isPasswordVisible) {
+                binding.etPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                binding.ivTogglePassword.setImageDrawable(
+                    ContextCompat.getDrawable(requireContext(), R.drawable.icon_eye_closed)
+                )
+                isPasswordVisible = false
+            } else {
+                binding.etPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                binding.ivTogglePassword.setImageDrawable(
+                    ContextCompat.getDrawable(requireContext(), R.drawable.icon_eye_open)
+                )
+                isPasswordVisible = true
+            }
+            binding.etPassword.setSelection(binding.etPassword.text?.length ?: 0)
+        }
+
+        // Тогл для подтверждения пароля
+        binding.ivToggleConfirmPassword.setOnClickListener {
+            if (isConfirmPasswordVisible) {
+                binding.etConfirmPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                binding.ivToggleConfirmPassword.setImageDrawable(
+                    ContextCompat.getDrawable(requireContext(), R.drawable.icon_eye_closed)
+                )
+                isConfirmPasswordVisible = false
+            } else {
+                binding.etConfirmPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                binding.ivToggleConfirmPassword.setImageDrawable(
+                    ContextCompat.getDrawable(requireContext(), R.drawable.icon_eye_open)
+                )
+                isConfirmPasswordVisible = true
+            }
+            binding.etConfirmPassword.setSelection(binding.etConfirmPassword.text?.length ?: 0)
+        }
     }
 
     private fun setupClickListeners() {

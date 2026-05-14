@@ -316,8 +316,10 @@ class MainMenuFilesFragment : Fragment() {
     }
 
     private fun loadFavorites() {
-        val favorites = allFiles.filter { it.isFavorite }
-        favoritesAdapter.submitList(favorites)
+        val firebaseFavorites = allFiles.filter { it.isFavorite }
+        val localFavorites = localDrawings.filter { it.isFavorite }
+        val allFavorites = firebaseFavorites + localFavorites
+        favoritesAdapter.submitList(allFavorites)
     }
 
     private fun loadDocuments() {
@@ -438,12 +440,19 @@ class MainMenuFilesFragment : Fragment() {
     }
 
     private fun showLocalFileOptionsDialog(fileItem: TodoFileModel) {
-        val options = arrayOf("Поделиться", "Удалить")
+        val options = mutableListOf("Поделиться", "Удалить")
+        if (fileItem.isFavorite) {
+            options.add(0, "Убрать из избранного")
+        } else {
+            options.add(0, "Добавить в избранное")
+        }
 
         AlertDialog.Builder(requireContext())
             .setTitle(fileItem.name)
-            .setItems(options) { _, which ->
+            .setItems(options.toTypedArray()) { _, which ->
                 when (options[which]) {
+                    "Добавить в избранное" -> addToFavorites(fileItem)
+                    "Убрать из избранного" -> removeFromFavorites(fileItem)
                     "Поделиться" -> shareLocalFile(fileItem)
                     "Удалить" -> deleteLocalFile(fileItem)
                 }
@@ -455,13 +464,26 @@ class MainMenuFilesFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val updatedFile = fileItem.copy(isFavorite = true)
-                firebaseService.updateFile(updatedFile)
-                val index = allFiles.indexOfFirst { it.id == fileItem.id }
-                if (index != -1) {
-                    (allFiles as MutableList)[index] = updatedFile
+
+                // Проверяем, из локального ли файла или из Firebase
+                if (fileItem.id.startsWith("/")) {
+                    // Локальный файл - сохраняем в избранное локально
+                    val index = localDrawings.indexOfFirst { it.id == fileItem.id }
+                    if (index != -1) {
+                        (localDrawings as MutableList)[index] = updatedFile
+                        loadAllDrawings()
+                    }
+                    Toast.makeText(requireContext(), "Добавлено в избранное", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Файл из Firebase
+                    firebaseService.updateFile(updatedFile)
+                    val index = allFiles.indexOfFirst { it.id == fileItem.id }
+                    if (index != -1) {
+                        (allFiles as MutableList)[index] = updatedFile
+                    }
+                    loadPersonalFiles()
+                    Toast.makeText(requireContext(), "Добавлено в избранное", Toast.LENGTH_SHORT).show()
                 }
-                loadPersonalFiles()
-                Toast.makeText(requireContext(), "Добавлено в избранное", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
             }
@@ -472,13 +494,26 @@ class MainMenuFilesFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val updatedFile = fileItem.copy(isFavorite = false)
-                firebaseService.updateFile(updatedFile)
-                val index = allFiles.indexOfFirst { it.id == fileItem.id }
-                if (index != -1) {
-                    (allFiles as MutableList)[index] = updatedFile
+
+                // Проверяем, из локального ли файла или из Firebase
+                if (fileItem.id.startsWith("/")) {
+                    // Локальный файл
+                    val index = localDrawings.indexOfFirst { it.id == fileItem.id }
+                    if (index != -1) {
+                        (localDrawings as MutableList)[index] = updatedFile
+                        loadAllDrawings()
+                    }
+                    Toast.makeText(requireContext(), "Убрано из избранного", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Файл из Firebase
+                    firebaseService.updateFile(updatedFile)
+                    val index = allFiles.indexOfFirst { it.id == fileItem.id }
+                    if (index != -1) {
+                        (allFiles as MutableList)[index] = updatedFile
+                    }
+                    loadPersonalFiles()
+                    Toast.makeText(requireContext(), "Убрано из избранного", Toast.LENGTH_SHORT).show()
                 }
-                loadPersonalFiles()
-                Toast.makeText(requireContext(), "Убрано из избранного", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
             }

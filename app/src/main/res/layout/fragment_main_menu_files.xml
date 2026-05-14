@@ -6,6 +6,7 @@
     android:background="@color/white">
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -92,6 +93,7 @@
                 android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
+                android:visibility="gone"
                 style="@style/DefaultMaterialButton"
                 android:id="@+id/btnDocuments"
                 android:layout_width="match_parent"
@@ -110,6 +112,7 @@
                 android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
+                android:visibility="gone"
                 style="@style/DefaultMaterialButton"
                 android:id="@+id/btnDrawings"
                 android:layout_width="match_parent"

@@ -14,6 +14,7 @@ import com.example.tasktracker.activities.TaskActivity
 import com.example.tasktracker.adapters.PlanListAdapter
 import com.example.tasktracker.components.PlanViewModel
 import com.example.tasktracker.components.dialogs.CreatePlanBottomSheet
+import com.example.tasktracker.components.dialogs.EditPlanBottomSheet
 import com.example.tasktracker.components.decorations.ItemDecoration
 import com.example.tasktracker.databinding.FragmentMainMenuProjectsBinding
 import com.example.tasktracker.models.PlanModel
@@ -127,7 +128,17 @@ class MainMenuProjectsFragment : Fragment() {
     }
 
     private fun editPlan(plan: PlanModel) {
-        Toast.makeText(requireContext(), "Редактирование плана: ${plan.name}", Toast.LENGTH_SHORT).show()
+        val currentUserId = getCurrentUserId()
+        if (currentUserId.isEmpty()) return
+
+        val bottomSheet = EditPlanBottomSheet(plan)
+        bottomSheet.setOnPlanUpdatedListener { updatedPlan ->
+            planViewModel.updatePlan(updatedPlan, currentUserId) {
+                Toast.makeText(requireContext(), "Проект \"${updatedPlan.name}\" обновлен!", Toast.LENGTH_SHORT).show()
+                loadData()
+            }
+        }
+        bottomSheet.show(parentFragmentManager, "EditPlanBottomSheet")
     }
 
     private fun deletePlan(plan: PlanModel) {

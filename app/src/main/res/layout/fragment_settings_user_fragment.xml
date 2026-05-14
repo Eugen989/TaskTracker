@@ -44,6 +44,7 @@
                 android:background="@color/accessory_70" />
 
             <com.google.android.material.button.MaterialButton
+                android:visibility="gone"
                 android:id="@+id/mbNotificationBand"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -57,11 +58,13 @@
                 app:icon="@drawable/icon_arrow_half_right"
                 app:iconGravity="end" />
             <View
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@color/accessory_70" />
 
             <com.google.android.material.button.MaterialButton
+                android:visibility="gone"
                 android:id="@+id/mbAdditionalFeaturesBand"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -75,6 +78,7 @@
                 app:icon="@drawable/icon_arrow_half_right"
                 app:iconGravity="end" />
             <View
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@color/accessory_70" />
