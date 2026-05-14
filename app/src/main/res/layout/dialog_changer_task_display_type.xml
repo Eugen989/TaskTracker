@@ -28,7 +28,7 @@
                 android:layout_height="24dp"
                 android:padding="4dp"
                 android:src="@drawable/icon_cross_grey"/>
-            
+
         </LinearLayout>
 
         <LinearLayout
@@ -65,14 +65,24 @@
                     app:icon="@drawable/icon_calendar_desk"
                     app:iconGravity="textStart"
                     app:backgroundTint="@color/accessory_90_70"
-                    android:background="@drawable/shape_item_square"
-                    />
+                    android:background="@drawable/shape_item_square"/>
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/DefaultMaterialButton"
+                    android:id="@+id/mbtnKanban"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:padding="16dp"
+                    android:text="Канбан доска"
+                    app:icon="@drawable/icon_kanban"
+                    app:iconGravity="textStart"
+                    app:backgroundTint="@color/accessory_90_70"
+                    android:background="@drawable/shape_item_square"/>
 
             </com.google.android.flexbox.FlexboxLayout>
 
-
         </LinearLayout>
-
 
     </LinearLayout>
 

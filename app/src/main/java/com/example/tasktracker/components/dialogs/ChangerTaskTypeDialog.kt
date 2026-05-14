@@ -23,9 +23,7 @@ class ChangerTaskTypeDialog : DialogFragment() {
     private var _binding: DialogChangerTaskDisplayTypeBinding? = null
     private val binding get() = _binding!!
 
-
     private var selectedDisplayType: ((Int) -> Unit)? = null
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -42,6 +40,15 @@ class ChangerTaskTypeDialog : DialogFragment() {
             dismiss()
         }
 
+        binding.mbtnKanban.setOnClickListener {
+            selectedDisplayType?.invoke(2)
+            dismiss()
+        }
+
+        binding.ivCross.setOnClickListener {
+            dismiss()
+        }
+
         val dialog = Dialog(requireContext())
         dialog.setContentView(binding.root)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
@@ -50,7 +57,7 @@ class ChangerTaskTypeDialog : DialogFragment() {
         return dialog
     }
 
-    fun setOnTypeSelectedListener (type: ((Int) -> Unit)) {
+    fun setOnTypeSelectedListener(type: ((Int) -> Unit)) {
         selectedDisplayType = type
     }
 

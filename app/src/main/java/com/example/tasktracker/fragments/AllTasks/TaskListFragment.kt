@@ -29,6 +29,10 @@ class TaskListFragment : Fragment() {
 
     private var currentPlanId: String? = null
     private var currentUserId: String? = null
+    private var isDateFilterActive = false
+    private var selectedYear = 0
+    private var selectedMonth = 0
+    private var selectedDay = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,14 +95,6 @@ class TaskListFragment : Fragment() {
         loadTasks()
     }
 
-    private fun updateTaskStatus(task: TodoTaskModel, isCompleted: Boolean) {
-        val updatedTask = task.copy(isCompleted = isCompleted)
-        taskViewModel.updateTask(updatedTask) {
-            Log.d(TAG, "Task status updated: ${task.title} -> isCompleted=$isCompleted")
-            refreshTasks()
-        }
-    }
-
     private fun loadTasks() {
         when {
             currentPlanId != null -> {
@@ -122,11 +118,59 @@ class TaskListFragment : Fragment() {
     }
 
     fun filterTasks(criteria: String) {
+        isDateFilterActive = false
         taskViewModel.filterTasks(criteria)
     }
 
     fun filterByDate(year: Int, month: Int, day: Int) {
-        taskViewModel.filterByDate(year, month, day)
+        isDateFilterActive = true
+        selectedYear = year
+        selectedMonth = month
+        selectedDay = day
+
+        Log.d(TAG, "filterByDate: $day.${month + 1}.$year")
+
+        when {
+            currentPlanId != null -> {
+                taskViewModel.loadTasksByPlanAndDate(currentPlanId!!, year, month, day)
+            }
+            currentUserId != null -> {
+                taskViewModel.loadTasksByUserAndDate(currentUserId!!, year, month, day)
+            }
+            else -> {
+                Log.w(TAG, "No PLAN_ID or USER_ID provided")
+            }
+        }
+    }
+
+    fun clearDateFilter() {
+        isDateFilterActive = false
+        selectedYear = 0
+        selectedMonth = 0
+        selectedDay = 0
+    }
+
+    private fun updateTaskStatus(task: TodoTaskModel, isChecked: Boolean) {
+        val newStatus = if (isChecked) {
+            TodoTaskModel.STATUS_COMPLETED
+        } else {
+            TodoTaskModel.STATUS_PENDING
+        }
+
+        val updatedTask = task.copy(
+            status = newStatus,
+            isCompleted = isChecked
+        )
+
+        taskViewModel.updateTaskStatus(
+            taskId = task.id,
+            isCompleted = isChecked,
+            userId = task.userId,
+            planId = task.planId
+        ) {
+            Log.d(TAG, "Task status updated: ${task.title} -> $newStatus")
+            refreshTasks()
+        }
     }
 
     fun updateElementFragment(task: TodoTaskModel) {
@@ -135,11 +179,17 @@ class TaskListFragment : Fragment() {
     }
 
     fun refreshTasks() {
-        loadTasks()
+        if (isDateFilterActive && currentPlanId != null) {
+            taskViewModel.loadTasksByPlanAndDate(currentPlanId!!, selectedYear, selectedMonth, selectedDay)
+        } else if (isDateFilterActive && currentUserId != null) {
+            taskViewModel.loadTasksByUserAndDate(currentUserId!!, selectedYear, selectedMonth, selectedDay)
+        } else {
+            loadTasks()
+        }
     }
 
     fun onTaskCreated() {
-        loadTasks()
+        refreshTasks()
     }
 
     override fun onDestroy() {

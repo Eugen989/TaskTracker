@@ -1,20 +1,15 @@
 package com.example.tasktracker.adapters
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tasktracker.R
 import com.example.tasktracker.databinding.ItemTaskListBinding
 import com.example.tasktracker.models.TodoTaskModel
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class TaskListAdapter(
@@ -63,48 +58,37 @@ class TaskListAdapter(
         fun bind(item: TodoTaskModel) {
             currentTask = item
 
-            // Заголовок задачи
             binding.tvItemTitle.text = item.title
-
-            // Дата
             binding.tvData.text = item.dataTimeStart?.let { dateFormat.format(it) } ?: "Дата не указана"
 
-            // Приоритет
             binding.tvPriority.text = getPriorityText(item.priorityId)
             binding.tvPriority.setTextColor(getPriorityColor(item.priorityId))
 
-            // Статус
-            binding.tvStatus.text = if (item.isCompleted) "Выполнена" else "В процессе"
-            binding.tvStatus.setTextColor(if (item.isCompleted) {
-                ContextCompat.getColor(binding.root.context, R.color.green)
-            } else {
-                ContextCompat.getColor(binding.root.context, R.color.orange)
-            })
+            val isTaskCompleted = item.status == TodoTaskModel.STATUS_COMPLETED
+            binding.tvStatus.text = getStatusText(item.status)
+            binding.tvStatus.setTextColor(getStatusColor(item.status))
 
-            // Checkbox
-            binding.cbTaskCompleted.isChecked = item.isCompleted
+            binding.cbTaskCompleted.isChecked = isTaskCompleted
             binding.cbTaskCompleted.setOnCheckedChangeListener { _, isChecked ->
                 currentTask?.let { task ->
                     onStatusChanged(task, isChecked)
                 }
             }
 
-            // Обработка нажатия на контейнер
             binding.layoutTodoInformationContainer.setOnClickListener {
                 onClickItem(item)
             }
 
-            // Стилизация для выполненной задачи
-            if (item.isCompleted) {
-                binding.tvItemTitle.setAlpha(0.6f)
-                binding.tvData.setAlpha(0.6f)
-                binding.tvPriority.setAlpha(0.6f)
-                binding.tvStatus.setAlpha(0.6f)
+            if (isTaskCompleted) {
+                binding.tvItemTitle.alpha = 0.6f
+                binding.tvData.alpha = 0.6f
+                binding.tvPriority.alpha = 0.6f
+                binding.tvStatus.alpha = 0.6f
             } else {
-                binding.tvItemTitle.setAlpha(1f)
-                binding.tvData.setAlpha(1f)
-                binding.tvPriority.setAlpha(1f)
-                binding.tvStatus.setAlpha(1f)
+                binding.tvItemTitle.alpha = 1f
+                binding.tvData.alpha = 1f
+                binding.tvPriority.alpha = 1f
+                binding.tvStatus.alpha = 1f
             }
         }
 
@@ -122,6 +106,24 @@ class TaskListAdapter(
                 "1", "high" -> ContextCompat.getColor(binding.root.context, R.color.red)
                 "2", "medium" -> ContextCompat.getColor(binding.root.context, R.color.orange)
                 "3", "low" -> ContextCompat.getColor(binding.root.context, R.color.green)
+                else -> ContextCompat.getColor(binding.root.context, R.color.gray)
+            }
+        }
+
+        private fun getStatusText(status: String): String {
+            return when (status) {
+                TodoTaskModel.STATUS_PENDING -> "К выполнению"
+                TodoTaskModel.STATUS_IN_PROGRESS -> "В процессе"
+                TodoTaskModel.STATUS_COMPLETED -> "Выполнена"
+                else -> "Неизвестно"
+            }
+        }
+
+        private fun getStatusColor(status: String): Int {
+            return when (status) {
+                TodoTaskModel.STATUS_PENDING -> ContextCompat.getColor(binding.root.context, R.color.orange)
+                TodoTaskModel.STATUS_IN_PROGRESS -> ContextCompat.getColor(binding.root.context, R.color.blue)
+                TodoTaskModel.STATUS_COMPLETED -> ContextCompat.getColor(binding.root.context, R.color.green)
                 else -> ContextCompat.getColor(binding.root.context, R.color.gray)
             }
         }

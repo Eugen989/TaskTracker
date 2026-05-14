@@ -183,6 +183,8 @@ class CreateTaskDialog : DialogFragment() {
             priorityId = selectedPriority.id,
             userId = currentUserId ?: "",
             planId = currentPlanId ?: "",
+            isCompleted = false,
+            status = TodoTaskModel.STATUS_PENDING,
             dataTimeStart = selectedStartDate,
             dataTimeEnd = selectedEndDate,
             createdAt = Date()

@@ -15,6 +15,7 @@ import com.example.tasktracker.components.TaskViewModel
 import com.example.tasktracker.components.dialogs.ChangerTaskTypeDialog
 import com.example.tasktracker.components.dialogs.CreateTaskDialog
 import com.example.tasktracker.databinding.ActivityTaskBinding
+import com.example.tasktracker.fragments.AllTasks.KanbanBoardFragment
 import com.example.tasktracker.fragments.AllTasks.TaskListFragment
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -119,7 +120,7 @@ class TaskActivity : AppCompatActivity() {
     }
 
     private fun showFilterDialog() {
-        val filterOptions = arrayOf("Все задачи", "Выполненные", "Не выполненные", "Просроченные")
+        val filterOptions = arrayOf("Все задачи", "К выполнению", "В процессе", "Выполненные", "Просроченные")
 
         androidx.appcompat.app.AlertDialog.Builder(this)
             .setTitle("Фильтр")
@@ -128,9 +129,10 @@ class TaskActivity : AppCompatActivity() {
                 if (fragment is TaskListFragment) {
                     when (which) {
                         0 -> fragment.filterTasks("all")
-                        1 -> fragment.filterTasks("completed")
-                        2 -> fragment.filterTasks("pending")
-                        3 -> fragment.filterTasks("overdue")
+                        1 -> fragment.filterTasks("pending")
+                        2 -> fragment.filterTasks("in_progress")
+                        3 -> fragment.filterTasks("completed")
+                        4 -> fragment.filterTasks("overdue")
                     }
                 }
             }
@@ -177,7 +179,7 @@ class TaskActivity : AppCompatActivity() {
     fun showTaskListPart() {
         binding.dpCalendar.isVisible = false
 
-        binding.mbtnDisplayType.text = "Title"
+        binding.mbtnDisplayType.text = "Список"
         binding.mbtnDisplayType.setIconResource(R.drawable.icon_file_list)
 
         val fragment = TaskListFragment.newInstance()
@@ -193,7 +195,7 @@ class TaskActivity : AppCompatActivity() {
     }
 
     fun showTaskDataPart() {
-        binding.mbtnDisplayType.text = "Data"
+        binding.mbtnDisplayType.text = "Календарь"
         binding.mbtnDisplayType.setIconResource(R.drawable.icon_calendar_desk)
 
         binding.dpCalendar.isVisible = true
@@ -213,7 +215,7 @@ class TaskActivity : AppCompatActivity() {
 
             val fragment = supportFragmentManager.findFragmentByTag("TaskListFragment")
             if (fragment is TaskListFragment) {
-                fragment.filterByDate(dateYear, dateMonth, dateDay)
+                fragment.filterByDate(year, monthOfYear, dayOfMonth)
             }
         }
 
@@ -227,15 +229,39 @@ class TaskActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(binding.fragmentContainer.id, fragment, "TaskListFragment")
             .commit()
+
+        // Применяем фильтр текущей даты после создания фрагмента
+        binding.dpCalendar.postDelayed({
+            val newFragment = supportFragmentManager.findFragmentByTag("TaskListFragment")
+            if (newFragment is TaskListFragment) {
+                newFragment.filterByDate(dateYear, dateMonth, dateDay)
+            }
+        }, 100)
     }
 
     fun onDisplayTypeDialog() {
         val dialog = ChangerTaskTypeDialog()
         dialog.setOnTypeSelectedListener { type ->
-            selectedDisplayType = type
-            changeDisplay()
+            when (type) {
+                0 -> showTaskListPart()
+                1 -> showTaskDataPart()
+                2 -> showKanbanPart()
+            }
         }
         dialog.show(supportFragmentManager, "ChangerTaskTypeDialog")
+    }
+
+    fun showKanbanPart() {
+        binding.dpCalendar.isVisible = false
+
+        binding.mbtnDisplayType.text = "Канбан"
+        binding.mbtnDisplayType.setIconResource(R.drawable.icon_kanban)
+
+        val fragment = KanbanBoardFragment.newInstance(currentPlanId, currentUserId)
+
+        supportFragmentManager.beginTransaction()
+            .replace(binding.fragmentContainer.id, fragment, "KanbanBoardFragment")
+            .commit()
     }
 
     fun setNowDate() {

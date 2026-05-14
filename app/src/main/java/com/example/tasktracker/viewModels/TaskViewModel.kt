@@ -121,7 +121,15 @@ class TaskViewModel : ViewModel() {
                 val currentTasks = _tasks.value
                 val task = currentTasks.find { it.id == taskId }
                 if (task != null) {
-                    val updatedTask = task.copy(isCompleted = isCompleted)
+                    val newStatus = if (isCompleted) {
+                        TodoTaskModel.STATUS_COMPLETED
+                    } else {
+                        TodoTaskModel.STATUS_PENDING
+                    }
+                    val updatedTask = task.copy(
+                        isCompleted = isCompleted,
+                        status = newStatus
+                    )
                     firebaseService.updateTask(updatedTask)
                     if (planId.isNotEmpty()) {
                         loadTasksByPlan(planId)
@@ -151,6 +159,62 @@ class TaskViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e(TAG, "forceLoadTasksByPlan - ERROR: ${e.message}")
                 _error.value = e.message
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun loadTasksByPlanAndDate(planId: String, year: Int, month: Int, day: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                Log.d(TAG, "loadTasksByPlanAndDate - START, planId: $planId, date: $day.${month + 1}.$year")
+                val allTasks = firebaseService.getTasksByPlan(planId)
+                val filteredTasks = allTasks.filter { task ->
+                    task.dataTimeStart?.let { date ->
+                        val calendar = Calendar.getInstance().apply { time = date }
+                        calendar.get(Calendar.YEAR) == year &&
+                                calendar.get(Calendar.MONTH) == month &&
+                                calendar.get(Calendar.DAY_OF_MONTH) == day
+                    } ?: false
+                }
+                originalTasks = allTasks
+                _tasks.value = filteredTasks
+                Log.d(TAG, "loadTasksByPlanAndDate - GOT TASKS: ${filteredTasks.size} tasks for selected date")
+            } catch (e: Exception) {
+                Log.e(TAG, "loadTasksByPlanAndDate - ERROR: ${e.message}")
+                _error.value = e.message
+                e.printStackTrace()
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun loadTasksByUserAndDate(userId: String, year: Int, month: Int, day: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                Log.d(TAG, "loadTasksByUserAndDate - START, userId: $userId, date: $day.${month + 1}.$year")
+                val allTasks = firebaseService.getTasksByUser(userId)
+                val filteredTasks = allTasks.filter { task ->
+                    task.dataTimeStart?.let { date ->
+                        val calendar = Calendar.getInstance().apply { time = date }
+                        calendar.get(Calendar.YEAR) == year &&
+                                calendar.get(Calendar.MONTH) == month &&
+                                calendar.get(Calendar.DAY_OF_MONTH) == day
+                    } ?: false
+                }
+                originalTasks = allTasks
+                _tasks.value = filteredTasks
+                Log.d(TAG, "loadTasksByUserAndDate - GOT TASKS: ${filteredTasks.size} tasks for selected date")
+            } catch (e: Exception) {
+                Log.e(TAG, "loadTasksByUserAndDate - ERROR: ${e.message}")
+                _error.value = e.message
+                e.printStackTrace()
             } finally {
                 _isLoading.value = false
             }
@@ -224,10 +288,11 @@ class TaskViewModel : ViewModel() {
     fun filterTasks(criteria: String) {
         currentFilterCriteria = criteria
         val filtered = when (criteria) {
-            "completed" -> originalTasks.filter { it.isCompleted }
-            "pending" -> originalTasks.filter { !it.isCompleted }
+            "completed" -> originalTasks.filter { it.status == TodoTaskModel.STATUS_COMPLETED }
+            "pending" -> originalTasks.filter { it.status == TodoTaskModel.STATUS_PENDING }
+            "in_progress" -> originalTasks.filter { it.status == TodoTaskModel.STATUS_IN_PROGRESS }
             "overdue" -> originalTasks.filter { task ->
-                task.dataTimeEnd != null && task.dataTimeEnd!!.before(Date()) && !task.isCompleted
+                task.dataTimeEnd != null && task.dataTimeEnd!!.before(Date()) && task.status != TodoTaskModel.STATUS_COMPLETED
             }
             else -> originalTasks
         }
