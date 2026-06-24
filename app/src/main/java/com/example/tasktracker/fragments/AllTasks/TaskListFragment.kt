@@ -29,10 +29,6 @@ class TaskListFragment : Fragment() {
 
     private var currentPlanId: String? = null
     private var currentUserId: String? = null
-    private var isDateFilterActive = false
-    private var selectedYear = 0
-    private var selectedMonth = 0
-    private var selectedDay = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +75,7 @@ class TaskListFragment : Fragment() {
 
         lifecycleScope.launch {
             taskViewModel.tasks.collect { tasks ->
+                Log.d(TAG, "Updating tasks: ${tasks.size} items")
                 adapter.submitList(tasks)
             }
         }
@@ -118,18 +115,11 @@ class TaskListFragment : Fragment() {
     }
 
     fun filterTasks(criteria: String) {
-        isDateFilterActive = false
         taskViewModel.filterTasks(criteria)
     }
 
     fun filterByDate(year: Int, month: Int, day: Int) {
-        isDateFilterActive = true
-        selectedYear = year
-        selectedMonth = month
-        selectedDay = day
-
         Log.d(TAG, "filterByDate: $day.${month + 1}.$year")
-
         when {
             currentPlanId != null -> {
                 taskViewModel.loadTasksByPlanAndDate(currentPlanId!!, year, month, day)
@@ -144,10 +134,7 @@ class TaskListFragment : Fragment() {
     }
 
     fun clearDateFilter() {
-        isDateFilterActive = false
-        selectedYear = 0
-        selectedMonth = 0
-        selectedDay = 0
+        taskViewModel.clearDateFilter()
     }
 
     private fun updateTaskStatus(task: TodoTaskModel, isChecked: Boolean) {
@@ -169,7 +156,6 @@ class TaskListFragment : Fragment() {
             planId = task.planId
         ) {
             Log.d(TAG, "Task status updated: ${task.title} -> $newStatus")
-            refreshTasks()
         }
     }
 
@@ -179,13 +165,7 @@ class TaskListFragment : Fragment() {
     }
 
     fun refreshTasks() {
-        if (isDateFilterActive && currentPlanId != null) {
-            taskViewModel.loadTasksByPlanAndDate(currentPlanId!!, selectedYear, selectedMonth, selectedDay)
-        } else if (isDateFilterActive && currentUserId != null) {
-            taskViewModel.loadTasksByUserAndDate(currentUserId!!, selectedYear, selectedMonth, selectedDay)
-        } else {
-            loadTasks()
-        }
+        taskViewModel.refreshTasks()
     }
 
     fun onTaskCreated() {

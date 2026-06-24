@@ -169,6 +169,16 @@ class TaskActivity : AppCompatActivity() {
         dialog.show(supportFragmentManager, "CreateTaskDialog")
     }
 
+    private fun clearFilters() {
+        val fragment = supportFragmentManager.findFragmentByTag("TaskListFragment")
+        if (fragment is TaskListFragment) {
+            fragment.clearDateFilter()
+            fragment.searchTasks("")
+            fragment.filterTasks("all")
+            fragment.sortTasks("date")
+        }
+    }
+
     fun changeDisplay() {
         when(selectedDisplayType) {
             0 -> showTaskListPart()
@@ -178,6 +188,7 @@ class TaskActivity : AppCompatActivity() {
     }
 
     fun showTaskListPart() {
+        clearFilters()
         binding.dpCalendar.isVisible = false
 
         binding.mbtnDisplayType.text = "Список"
@@ -196,6 +207,7 @@ class TaskActivity : AppCompatActivity() {
     }
 
     fun showTaskDataPart() {
+        clearFilters()
         binding.mbtnDisplayType.text = "Календарь"
         binding.mbtnDisplayType.setIconResource(R.drawable.icon_calendar_desk)
 
@@ -231,7 +243,6 @@ class TaskActivity : AppCompatActivity() {
             .replace(binding.fragmentContainer.id, fragment, "TaskListFragment")
             .commit()
 
-        // Применяем фильтр текущей даты после создания фрагмента
         binding.dpCalendar.postDelayed({
             val newFragment = supportFragmentManager.findFragmentByTag("TaskListFragment")
             if (newFragment is TaskListFragment) {
@@ -253,6 +264,7 @@ class TaskActivity : AppCompatActivity() {
     }
 
     fun showKanbanPart() {
+        clearFilters()
         binding.dpCalendar.isVisible = false
 
         binding.mbtnDisplayType.text = "Канбан"

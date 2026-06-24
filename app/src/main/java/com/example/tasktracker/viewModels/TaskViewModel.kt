@@ -26,8 +26,14 @@ class TaskViewModel : ViewModel() {
     val error: StateFlow<String?> = _error.asStateFlow()
 
     private var originalTasks: List<TodoTaskModel> = emptyList()
+
     private var currentSortCriteria: String = "date"
     private var currentFilterCriteria: String = "all"
+    private var currentSearchQuery: String = ""
+    private var isDateFilterActive: Boolean = false
+    private var selectedYear: Int = 0
+    private var selectedMonth: Int = 0
+    private var selectedDay: Int = 0
 
     fun loadTasks(userId: String) {
         viewModelScope.launch {
@@ -36,7 +42,7 @@ class TaskViewModel : ViewModel() {
             try {
                 val tasks = firebaseService.getTasksByUser(userId)
                 originalTasks = tasks
-                _tasks.value = tasks
+                applyFiltersAndSort()
                 Log.d(TAG, "Loaded ${tasks.size} tasks for user: $userId")
             } catch (e: Exception) {
                 _error.value = e.message
@@ -45,6 +51,164 @@ class TaskViewModel : ViewModel() {
                 _isLoading.value = false
             }
         }
+    }
+
+    fun loadTasksByPlan(planId: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                Log.d(TAG, "loadTasksByPlan - START, planId: $planId")
+                val tasks = firebaseService.getTasksByPlan(planId)
+                originalTasks = tasks
+                applyFiltersAndSort()
+                Log.d(TAG, "loadTasksByPlan - GOT TASKS: ${tasks.size} tasks")
+            } catch (e: Exception) {
+                Log.e(TAG, "loadTasksByPlan - ERROR: ${e.message}")
+                _error.value = e.message
+                e.printStackTrace()
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun loadTasksByPlanAndDate(planId: String, year: Int, month: Int, day: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                Log.d(TAG, "loadTasksByPlanAndDate - START, planId: $planId, date: $day.${month + 1}.$year")
+                val allTasks = firebaseService.getTasksByPlan(planId)
+                originalTasks = allTasks
+                isDateFilterActive = true
+                selectedYear = year
+                selectedMonth = month
+                selectedDay = day
+                applyFiltersAndSort()
+                Log.d(TAG, "loadTasksByPlanAndDate - GOT ${_tasks.value.size} tasks for selected date")
+            } catch (e: Exception) {
+                Log.e(TAG, "loadTasksByPlanAndDate - ERROR: ${e.message}")
+                _error.value = e.message
+                e.printStackTrace()
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun loadTasksByUserAndDate(userId: String, year: Int, month: Int, day: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _error.value = null
+            try {
+                Log.d(TAG, "loadTasksByUserAndDate - START, userId: $userId, date: $day.${month + 1}.$year")
+                val allTasks = firebaseService.getTasksByUser(userId)
+                originalTasks = allTasks
+                isDateFilterActive = true
+                selectedYear = year
+                selectedMonth = month
+                selectedDay = day
+                applyFiltersAndSort()
+                Log.d(TAG, "loadTasksByUserAndDate - GOT ${_tasks.value.size} tasks for selected date")
+            } catch (e: Exception) {
+                Log.e(TAG, "loadTasksByUserAndDate - ERROR: ${e.message}")
+                _error.value = e.message
+                e.printStackTrace()
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    private fun applyFiltersAndSort() {
+        var result = originalTasks
+
+        if (isDateFilterActive) {
+            result = result.filter { task ->
+                task.dataTimeStart?.let { date ->
+                    val calendar = Calendar.getInstance().apply { time = date }
+                    calendar.get(Calendar.YEAR) == selectedYear &&
+                            calendar.get(Calendar.MONTH) == selectedMonth &&
+                            calendar.get(Calendar.DAY_OF_MONTH) == selectedDay
+                } ?: false
+            }
+        }
+
+        if (currentSearchQuery.isNotEmpty()) {
+            result = result.filter {
+                it.title.contains(currentSearchQuery, ignoreCase = true) ||
+                        it.description.contains(currentSearchQuery, ignoreCase = true)
+            }
+        }
+
+        result = applyFilterByStatus(result)
+
+        result = applySort(result)
+
+        _tasks.value = result
+    }
+
+    private fun applyFilterByStatus(tasks: List<TodoTaskModel>): List<TodoTaskModel> {
+        return when (currentFilterCriteria) {
+            "completed" -> tasks.filter { it.status == TodoTaskModel.STATUS_COMPLETED }
+            "pending" -> tasks.filter { it.status == TodoTaskModel.STATUS_PENDING }
+            "in_progress" -> tasks.filter { it.status == TodoTaskModel.STATUS_IN_PROGRESS }
+            "overdue" -> tasks.filter { task ->
+                task.dataTimeEnd != null &&
+                        task.dataTimeEnd!!.before(Date()) &&
+                        task.status != TodoTaskModel.STATUS_COMPLETED
+            }
+            else -> tasks
+        }
+    }
+
+    private fun applySort(tasks: List<TodoTaskModel>): List<TodoTaskModel> {
+        return when (currentSortCriteria) {
+            "title" -> tasks.sortedBy { it.title }
+            "date" -> tasks.sortedByDescending { it.dataTimeStart }
+            "status" -> tasks.sortedBy { it.isCompleted }
+            "priority" -> tasks.sortedBy { it.priorityId }
+            else -> tasks.sortedByDescending { it.dataTimeStart }
+        }
+    }
+
+    fun searchTasks(query: String) {
+        currentSearchQuery = query.trim()
+        applyFiltersAndSort()
+    }
+
+    fun sortTasks(criteria: String) {
+        currentSortCriteria = criteria
+        applyFiltersAndSort()
+    }
+
+    fun filterTasks(criteria: String) {
+        currentFilterCriteria = criteria
+        isDateFilterActive = false
+        applyFiltersAndSort()
+    }
+
+    fun filterByDate(year: Int, month: Int, day: Int) {
+        isDateFilterActive = true
+        selectedYear = year
+        selectedMonth = month
+        selectedDay = day
+        currentFilterCriteria = "all"
+        applyFiltersAndSort()
+    }
+
+    fun clearDateFilter() {
+        isDateFilterActive = false
+        applyFiltersAndSort()
+    }
+
+    fun clearAllFilters() {
+        currentSearchQuery = ""
+        currentFilterCriteria = "all"
+        isDateFilterActive = false
+        currentSortCriteria = "date"
+        applyFiltersAndSort()
     }
 
     fun createTask(
@@ -79,37 +243,17 @@ class TaskViewModel : ViewModel() {
                     firebaseService.addTaskToPlan(planId, taskId)
                 }
 
-                loadTasks(userId)
+                if (planId.isNotEmpty()) {
+                    loadTasksByPlan(planId)
+                } else {
+                    loadTasks(userId)
+                }
                 onSuccess(taskId)
             } catch (e: Exception) {
                 _error.value = e.message
                 e.printStackTrace()
             } finally {
                 _isLoading.value = false
-            }
-        }
-    }
-
-    fun loadTasksByPlan(planId: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _error.value = null
-            try {
-                Log.d(TAG, "loadTasksByPlan - START, planId: $planId")
-                val tasks = firebaseService.getTasksByPlan(planId)
-                originalTasks = tasks
-                _tasks.value = tasks
-                Log.d(TAG, "loadTasksByPlan - GOT TASKS: ${tasks.size} tasks")
-                tasks.forEach { task ->
-                    Log.d(TAG, "  - Task: ${task.title}, ID: ${task.id}")
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "loadTasksByPlan - ERROR: ${e.message}")
-                _error.value = e.message
-                e.printStackTrace()
-            } finally {
-                _isLoading.value = false
-                Log.d(TAG, "loadTasksByPlan - FINISHED, final tasks count: ${_tasks.value.size}")
             }
         }
     }
@@ -131,88 +275,18 @@ class TaskViewModel : ViewModel() {
                         status = newStatus
                     )
                     firebaseService.updateTask(updatedTask)
-                    if (planId.isNotEmpty()) {
-                        loadTasksByPlan(planId)
-                    } else {
-                        loadTasks(userId)
+
+                    val index = originalTasks.indexOfFirst { it.id == taskId }
+                    if (index != -1) {
+                        originalTasks = originalTasks.toMutableList().apply {
+                            set(index, updatedTask)
+                        }
                     }
+
+                    applyFiltersAndSort()
                     onSuccess()
                 }
             } catch (e: Exception) {
-                _error.value = e.message
-                e.printStackTrace()
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun forceLoadTasksByPlan(planId: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _error.value = null
-            try {
-                Log.d(TAG, "forceLoadTasksByPlan - START, planId: $planId")
-                val tasks = firebaseService.getTasksByPlan(planId)
-                originalTasks = tasks
-                _tasks.value = tasks
-            } catch (e: Exception) {
-                Log.e(TAG, "forceLoadTasksByPlan - ERROR: ${e.message}")
-                _error.value = e.message
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun loadTasksByPlanAndDate(planId: String, year: Int, month: Int, day: Int) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _error.value = null
-            try {
-                Log.d(TAG, "loadTasksByPlanAndDate - START, planId: $planId, date: $day.${month + 1}.$year")
-                val allTasks = firebaseService.getTasksByPlan(planId)
-                val filteredTasks = allTasks.filter { task ->
-                    task.dataTimeStart?.let { date ->
-                        val calendar = Calendar.getInstance().apply { time = date }
-                        calendar.get(Calendar.YEAR) == year &&
-                                calendar.get(Calendar.MONTH) == month &&
-                                calendar.get(Calendar.DAY_OF_MONTH) == day
-                    } ?: false
-                }
-                originalTasks = allTasks
-                _tasks.value = filteredTasks
-                Log.d(TAG, "loadTasksByPlanAndDate - GOT TASKS: ${filteredTasks.size} tasks for selected date")
-            } catch (e: Exception) {
-                Log.e(TAG, "loadTasksByPlanAndDate - ERROR: ${e.message}")
-                _error.value = e.message
-                e.printStackTrace()
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun loadTasksByUserAndDate(userId: String, year: Int, month: Int, day: Int) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _error.value = null
-            try {
-                Log.d(TAG, "loadTasksByUserAndDate - START, userId: $userId, date: $day.${month + 1}.$year")
-                val allTasks = firebaseService.getTasksByUser(userId)
-                val filteredTasks = allTasks.filter { task ->
-                    task.dataTimeStart?.let { date ->
-                        val calendar = Calendar.getInstance().apply { time = date }
-                        calendar.get(Calendar.YEAR) == year &&
-                                calendar.get(Calendar.MONTH) == month &&
-                                calendar.get(Calendar.DAY_OF_MONTH) == day
-                    } ?: false
-                }
-                originalTasks = allTasks
-                _tasks.value = filteredTasks
-                Log.d(TAG, "loadTasksByUserAndDate - GOT TASKS: ${filteredTasks.size} tasks for selected date")
-            } catch (e: Exception) {
-                Log.e(TAG, "loadTasksByUserAndDate - ERROR: ${e.message}")
                 _error.value = e.message
                 e.printStackTrace()
             } finally {
@@ -226,11 +300,15 @@ class TaskViewModel : ViewModel() {
             _isLoading.value = true
             try {
                 firebaseService.updateTask(task)
-                if (task.planId.isNotEmpty()) {
-                    loadTasksByPlan(task.planId)
-                } else {
-                    loadTasks(task.userId)
+
+                val index = originalTasks.indexOfFirst { it.id == task.id }
+                if (index != -1) {
+                    originalTasks = originalTasks.toMutableList().apply {
+                        set(index, task)
+                    }
                 }
+
+                applyFiltersAndSort()
                 onSuccess()
             } catch (e: Exception) {
                 _error.value = e.message
@@ -246,11 +324,10 @@ class TaskViewModel : ViewModel() {
             _isLoading.value = true
             try {
                 firebaseService.deleteTask(taskId)
-                if (planId.isNotEmpty()) {
-                    loadTasksByPlan(planId)
-                } else {
-                    loadTasks(userId)
-                }
+
+                originalTasks = originalTasks.filter { it.id != taskId }
+
+                applyFiltersAndSort()
                 onSuccess()
             } catch (e: Exception) {
                 _error.value = e.message
@@ -261,53 +338,7 @@ class TaskViewModel : ViewModel() {
         }
     }
 
-    fun searchTasks(query: String) {
-        if (query.isEmpty()) {
-            _tasks.value = originalTasks
-        } else {
-            val filtered = originalTasks.filter {
-                it.title.contains(query, ignoreCase = true) ||
-                        it.description.contains(query, ignoreCase = true)
-            }
-            _tasks.value = filtered
-        }
-    }
-
-    fun sortTasks(criteria: String) {
-        currentSortCriteria = criteria
-        val sorted = _tasks.value.toMutableList()
-        when (criteria) {
-            "title" -> sorted.sortBy { it.title }
-            "date" -> sorted.sortByDescending { it.dataTimeStart }
-            "status" -> sorted.sortBy { it.isCompleted }
-            "priority" -> sorted.sortBy { it.priorityId }
-        }
-        _tasks.value = sorted
-    }
-
-    fun filterTasks(criteria: String) {
-        currentFilterCriteria = criteria
-        val filtered = when (criteria) {
-            "completed" -> originalTasks.filter { it.status == TodoTaskModel.STATUS_COMPLETED }
-            "pending" -> originalTasks.filter { it.status == TodoTaskModel.STATUS_PENDING }
-            "in_progress" -> originalTasks.filter { it.status == TodoTaskModel.STATUS_IN_PROGRESS }
-            "overdue" -> originalTasks.filter { task ->
-                task.dataTimeEnd != null && task.dataTimeEnd!!.before(Date()) && task.status != TodoTaskModel.STATUS_COMPLETED
-            }
-            else -> originalTasks
-        }
-        _tasks.value = filtered
-    }
-
-    fun filterByDate(year: Int, month: Int, day: Int) {
-        val filtered = originalTasks.filter { task ->
-            task.dataTimeStart?.let { date ->
-                val calendar = Calendar.getInstance().apply { time = date }
-                calendar.get(Calendar.YEAR) == year &&
-                        calendar.get(Calendar.MONTH) == month &&
-                        calendar.get(Calendar.DAY_OF_MONTH) == day
-            } ?: false
-        }
-        _tasks.value = filtered
+    fun refreshTasks() {
+        applyFiltersAndSort()
     }
 }

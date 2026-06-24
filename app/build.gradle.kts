@@ -114,6 +114,9 @@ dependencies {
     implementation(libs.credentials.play.services.auth)
     implementation(libs.googleid)
 
+    // Цветовой круг
+    implementation("com.larswerkman:HoloColorPicker:1.5")
+
     // firebase
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-firestore")

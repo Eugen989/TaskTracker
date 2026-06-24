@@ -10,12 +10,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.example.tasktracker.R
 import com.example.tasktracker.databinding.FragmentMainMenuDrawingBinding
+import com.larswerkman.holocolorpicker.ColorPicker
+import com.larswerkman.holocolorpicker.OpacityBar
+import com.larswerkman.holocolorpicker.SVBar
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -29,6 +32,7 @@ class MainMenuDrawingFragment : Fragment() {
     private val TAG = "MainMenuDrawingFragment"
     private var _binding: FragmentMainMenuDrawingBinding? = null
     private val binding get() = _binding!!
+    private var currentColor = Color.BLACK
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,7 +79,13 @@ class MainMenuDrawingFragment : Fragment() {
     }
 
     private fun updateToolButtonSelection(selectedButton: ImageButton) {
-        val buttons = listOf(binding.btnPen, binding.btnEraser, binding.btnClear, binding.btnColorPicker, binding.btnSave)
+        val buttons = listOf(
+            binding.btnPen,
+            binding.btnEraser,
+            binding.btnClear,
+            binding.btnColorPicker,
+            binding.btnSave
+        )
 
         buttons.forEach { button ->
             button.background = if (button == selectedButton) {
@@ -99,23 +109,45 @@ class MainMenuDrawingFragment : Fragment() {
     }
 
     private fun showColorPickerDialog() {
-        val colors = listOf(
-            Color.BLACK, Color.RED, Color.BLUE, Color.GREEN,
-            Color.YELLOW, Color.MAGENTA, Color.CYAN, Color.GRAY
-        )
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_color_picker_holo, null)
 
-        val colorNames = listOf("Черный", "Красный", "Синий", "Зеленый", "Желтый", "Фиолетовый", "Голубой", "Серый")
+        val colorPicker = dialogView.findViewById<ColorPicker>(R.id.colorPicker)
+        val svBar = dialogView.findViewById<SVBar>(R.id.svbar)
+        val opacityBar = dialogView.findViewById<OpacityBar>(R.id.opacitybar)
+        val tvHexColor = dialogView.findViewById<TextView>(R.id.tvHexColor)
+        val viewColorPreview = dialogView.findViewById<View>(R.id.viewColorPreview)
 
-        AlertDialog.Builder(requireContext())
+        colorPicker.addSVBar(svBar)
+        colorPicker.addOpacityBar(opacityBar)
+        colorPicker.setOldCenterColor(currentColor)
+        colorPicker.setColor(currentColor)
+
+        colorPicker.setOnColorChangedListener { color ->
+            viewColorPreview.setBackgroundColor(color)
+            tvHexColor.text = String.format("#%06X", (0xFFFFFF and color))
+        }
+
+        viewColorPreview.setBackgroundColor(currentColor)
+        tvHexColor.text = String.format("#%06X", (0xFFFFFF and currentColor))
+
+        val dialog = AlertDialog.Builder(requireContext())
             .setTitle("Выберите цвет")
-            .setItems(colorNames.toTypedArray()) { _, which ->
-                val selectedColor = colors[which]
+            .setView(dialogView)
+            .setPositiveButton("Выбрать") { _, _ ->
+                val selectedColor = colorPicker.color
+                currentColor = selectedColor
                 binding.drawingView.setColor(selectedColor)
                 binding.drawingView.setTool("pen")
                 updateToolButtonSelection(binding.btnPen)
-                Toast.makeText(requireContext(), "Выбран цвет: ${colorNames[which]}", Toast.LENGTH_SHORT).show()
+
+                val hexColor = String.format("#%06X", (0xFFFFFF and selectedColor))
+                Toast.makeText(requireContext(), "Выбран цвет: $hexColor", Toast.LENGTH_SHORT).show()
             }
-            .show()
+            .setNegativeButton("Отмена", null)
+            .create()
+
+        dialog.show()
     }
 
     private fun saveDrawing() {
