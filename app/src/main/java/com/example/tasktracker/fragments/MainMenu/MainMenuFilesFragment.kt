@@ -285,7 +285,7 @@ class MainMenuFilesFragment : Fragment() {
                 loadPersonalFiles()
             } catch (e: Exception) {
                 Log.e(TAG, "Error loading files: ${e.message}")
-                Toast.makeText(requireContext(), "Ошибка загрузки файлов", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), "Ошибка загрузки файлов", Toast.LENGTH_SHORT).show()
             }
         }
     }

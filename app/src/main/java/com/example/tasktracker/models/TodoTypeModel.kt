@@ -8,10 +8,10 @@ data class TodoTypeModel(
     val color: String = "#2196F3"
 ) {
     companion object {
-        val TASK = TodoTypeModel(name = "Задача", color = "#2196F3")      // Синий
-        val SKETCH = TodoTypeModel(name = "Скетч", color = "#9C27B0")      // Фиолетовый
-        val DRAWING = TodoTypeModel(name = "Рисунок", color = "#FF9800")    // Оранжевый
-        val PAINT = TodoTypeModel(name = "Покрас", color = "#4CAF50")       // Зеленый
+        val TASK = TodoTypeModel(name = "Задача", color = "#2196F3")
+        val SKETCH = TodoTypeModel(name = "Скетч", color = "#9C27B0")
+        val DRAWING = TodoTypeModel(name = "Рисунок", color = "#FF9800")
+        val PAINT = TodoTypeModel(name = "Покрас", color = "#4CAF50")
 
         fun getDefaults(): List<TodoTypeModel> {
             return listOf(TASK, SKETCH, DRAWING, PAINT)

@@ -17,7 +17,6 @@ class AuthenticationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        Log.d(TAG, TAG + " init")
 
         _binding = ActivityAuthenticationBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -26,7 +25,6 @@ class AuthenticationActivity : AppCompatActivity() {
     }
 
     fun initView() {
-//        Log.d(TAG, "init")
 
         replaceFragment(AuthenticationLoginFragment.newInstance())
     }
